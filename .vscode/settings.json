@@ -19,7 +19,8 @@
         "iterator": "c",
         "string": "c",
         "string_view": "c",
-        "vector": "c"
+        "vector": "c",
+        "stdarg.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

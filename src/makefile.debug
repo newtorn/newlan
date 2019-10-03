@@ -2,7 +2,7 @@
 
 CC = gcc
 
-CFLAGS = -g -lm -Wall -I cli  -I include -I parser -I vm -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -fgnu89-inline
+CFLAGS = -g -DDEBUG -lm -Wall -I cli  -I include -I parser -I vm -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -fgnu89-inline
 
 TARGET = newlan
 

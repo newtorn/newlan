@@ -28,10 +28,10 @@ typedef struct model Model;
 #define ASSERT(cond, err) ((void)0);
 #endif
 
-#define NOT_REACHED                                                   \
+#define NOT_REACHED()                                                 \
     do                                                                \
     {                                                                 \
-        fprintf(stderr, "Not REACHED: %s:%d in function: %s(): %s\n", \
+        fprintf(stderr, "Not REACHED: %s:%d in function: %s()\n", \
                 __FILE__, __LINE__, __func__);                        \
         while (1)                                                     \
         {                                                             \

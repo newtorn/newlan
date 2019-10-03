@@ -37,11 +37,13 @@ uint32_t roundUpToPowerOf2(uint32_t n)
     return n;
 }
 
+// 缓冲类型处理函数定义
 DEFINE_BUFFER_FUNC(Int)
 DEFINE_BUFFER_FUNC(Char)
 DEFINE_BUFFER_FUNC(Byte)
 DEFINE_BUFFER_FUNC(String)
 
+// 符号表清空
 void symbolTableClear(VM *vm, SymbolTable *st)
 {
     uint32_t idx = 0;
@@ -52,10 +54,31 @@ void symbolTableClear(VM *vm, SymbolTable *st)
     StringBufferClear(vm, st);
 }
 
-void errorReport(Parser *parser, ErrorType et, const char* fmt, ...)
+// 通用报错函数
+void errorReport(Parser *parser, ErrorType et, const char *fmt, ...)
 {
     char buf[DEFAULT_BUFFER_SIZE] = {'\0'};
     va_list ap;
     va_start(ap, fmt);
-    vsnprintf();
+    vsnprintf(buf, DEFAULT_BUFFER_SIZE, fmt, ap);
+    va_end(ap);
+
+    switch (et)
+    {
+    case ERROR_IO:
+    case ERROR_MEM:
+        fprintf(stderr, "%s:%d In function %s():%s\n", __FILE__, __LINE__, __func__, buf);
+        break;
+    case ERROR_LEX:
+    case ERROR_COMPILE:
+        ASSERT(parser != NULL, "parser is null!");
+        fprintf(stderr, "%s:%d \"%s\"\n", parser->file, parser->preToken.lineNum, buf);
+        break;
+    case ERROR_RUNTIME:
+        fprintf(stderr, "%s\n", buf);
+        break;
+    default:
+        NOT_REACHED();
+    }
+    exit(1);
 }
