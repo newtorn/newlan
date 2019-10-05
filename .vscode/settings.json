@@ -20,7 +20,9 @@
         "string": "c",
         "string_view": "c",
         "vector": "c",
-        "stdarg.h": "c"
+        "stdarg.h": "c",
+        "utf8.h": "c",
+        "sstream": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
