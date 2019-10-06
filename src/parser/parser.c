@@ -513,7 +513,7 @@ void initParser(VM *vm, Parser *parser, const char *file, const char *source)
 {
     parser->file = file;
     parser->source = source;
-    parser->curToken = *(parser->source);
+    parser->curChar = *(parser->source);
     parser->nextChar = parser->source + 1;
     parser->curToken.lineNum = 1;
     parser->curToken.type = TOKEN_UNKNOWN;
