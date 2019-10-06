@@ -499,7 +499,7 @@ void consumeCurToken(Parser *parser, TokenType expected, const char *errMsg)
 }
 
 // 断言下一个标记为期望标记，否则报错
-void consumeCurToken(Parser *parser, TokenType expected, const char *errMsg)
+void consumeNextToken(Parser *parser, TokenType expected, const char *errMsg)
 {
     getNextToken(parser);
     if (expected != parser->curToken.type)
