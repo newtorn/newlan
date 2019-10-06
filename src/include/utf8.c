@@ -5,7 +5,7 @@
 // 要编码的值超过范围则返回0
 uint32_t getByteNumOfEncodeUtf8(int value)
 {
-    ASSERT(value >= 0, "Can't encode negative value!");
+    ASSERT(value > 0, "Can't encode negative value!");
 
     if (value <= 0x7f)
     {
@@ -42,7 +42,7 @@ uint32_t getByteNumOfEncodeUtf8(int value)
 // 缓冲区以大端字节序村粗，高字节在前，低字节在后
 uint8_t encodeUtf8(uint8_t *buf, int value)
 {
-    ASSERT(value >= 0, "Can't encode negative value!");
+    ASSERT(value > 0, "Can't encode negative value!");
 
     if (value <= 0x7f)
     {
@@ -77,7 +77,7 @@ uint8_t encodeUtf8(uint8_t *buf, int value)
 
     if (value <= 0x10ffff)
     {
-        *buf++ = 0xf0 | ((value & 0x1f0000) >> 18);
+        *buf++ = 0xf0 | ((value & 0x1c0000) >> 18);
         *buf++ = 0x80 | ((value & 0x3f000) >> 12);
         *buf++ = 0x80 | ((value & 0xfc0) >> 6);
         *buf = 0x80 | (value & 0x3f);
@@ -130,7 +130,7 @@ uint32_t getByteNumOfDecodeUtf8(uint8_t high_byte)
 // 如果不是UTF-8编码，返回-1
 int decodeUtf8(const uint8_t *buf, uint32_t maxsize)
 {
-    if (*buf < 0x7f)
+    if (*buf <= 0x7f)
     {
         // ascii
         return *buf;
@@ -166,8 +166,10 @@ int decodeUtf8(const uint8_t *buf, uint32_t maxsize)
     }
 
     // 填充低字节
-    while (restBytes-- > 0 & ++buf != NULL)
+    while (restBytes > 0)
     {
+        buf++;
+        restBytes--;
         // 低字节高2位为10
         if (0x80 != (*buf & 0xc0))
         {

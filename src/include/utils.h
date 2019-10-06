@@ -7,22 +7,22 @@ void *memCtl(VM *vmPtr, void *ptr, uint32_t oldSize, uint32_t newSize);
 
 // 分配指针类型
 #define ALLOCATE(vmPtr, type) \
-    (type *)memCtl(vmPtr, NULL, 0, sizeof(type));
+    (type *)memCtl(vmPtr, NULL, 0, sizeof(type))
 
 // 分配柔性类型
 #define ALLOCATE_FLEX(vmPtr, type, flexSize) \
-    (type *)memCtl(vmPtr, NULL, 0, sizeof(type) + flexSize);
+    (type *)memCtl(vmPtr, NULL, 0, sizeof(type) + flexSize)
 
 // 分配连续空间
 #define ALLOCATE_ARRAY(vmPtr, type, size) \
-    (type *)memCtl(vmPtr, NULL, 0, sizeof(type) * size);
+    (type *)memCtl(vmPtr, NULL, 0, sizeof(type) * size)
 
 // 释放连续空间
 #define DEALLOCATE_ARRAY(vmPtr, arrPtr, size) \
-    memCtl(vmPtr, arrPtr, sizeof(arr[0]) * size, 0);
+    memCtl(vmPtr, arrPtr, sizeof(arrPtr[0]) * size, 0)
 
 // 释放指针类型
-#define DEALLOCATE(vmPtr, ptr) memCtl(vmPtr, ptr, 0, 0);
+#define DEALLOCATE(vmPtr, ptr) memCtl(vmPtr, ptr, 0, 0)
 
 // n最近的2次幂
 uint32_t roundUpToPowerOf2(uint32_t n);
@@ -42,57 +42,55 @@ typedef struct
 } CharValue;
 
 // 声明缓冲类型和方法
-#define DECLARE_BUFFER_TYPE(type)                                                 \
-    typedef struct                                                                \
-    {                                                                             \
-        type *datas;                                                              \
-        uint32_t cnt;                                                             \
-        uint32_t cap;                                                             \
-    } type##Buffer;                                                               \
-    void type##BufferInit(type##Buffer *buf);                                     \
+#define DECLARE_BUFFER_TYPE(type)                                                  \
+    typedef struct                                                                 \
+    {                                                                              \
+        type *datas;                                                               \
+        uint32_t cnt;                                                              \
+        uint32_t cap;                                                              \
+    } type##Buffer;                                                                \
+    void type##BufferInit(type##Buffer *buf);                                      \
     void type##BufferPut(VM *vm, type##Buffer *buf, type data);                    \
     void type##BufferFill(VM *vm, type##Buffer *buf, type data, uint32_t fillCnt); \
     void type##BufferClear(VM *vm, type##Buffer *buf);
 
 // 定义缓冲类型处理方法
-#define DEFINE_BUFFER_FUNC(type)                                                 \
+#define DEFINE_BUFFER_FUNC(type)                                                  \
     void type##BufferInit(type##Buffer *buf)                                      \
-    {                                                                            \
-        buf->datas = NULL;                                                       \
-        buf->cnt = buf->cap = 0;                                                 \
-    }                                                                            \
-                                                                                 \
+    {                                                                             \
+        buf->datas = NULL;                                                        \
+        buf->cnt = buf->cap = 0;                                                  \
+    }                                                                             \
+                                                                                  \
     void type##BufferFill(VM *vm, type##Buffer *buf, type data, uint32_t fillCnt) \
-    {                                                                            \
-        uint32_t newCnt = buf->cnt + fillCnt;                                    \
-        if (newCnt > buf->cap)                                                   \
-        {                                                                        \
-            size_t oldSize = buf->cap * sizeof(type);                            \
-            buf->cap = roundUpToPowerOf2(newCnt);                                \
-            size_t newSize = buf->cap + sizeof(type);                            \
-            ASSERT(newSize > oldSize, "faint...memory allocate!");               \
-            buf->datas = (type *)memCtl(vm, buf->datas, oldSize, newSize);       \
-        }                                                                        \
-        uint32_t cnt = 0;                                                        \
-        while (cnt < fillCnt)                                                    \
-        {                                                                        \
-            buf->datas[buf->cnt++] = data;                                       \
-            ++cnt;                                                               \
-        }                                                                        \
-    }                                                                            \
-                                                                                 \
+    {                                                                             \
+        uint32_t newCnt = buf->cnt + fillCnt;                                     \
+        if (newCnt > buf->cap)                                                    \
+        {                                                                         \
+            size_t oldSize = buf->cap * sizeof(type);                             \
+            buf->cap = roundUpToPowerOf2(newCnt);                                 \
+            size_t newSize = buf->cap * sizeof(type);                             \
+            ASSERT(newSize > oldSize, "faint...memory allocate!");                \
+            buf->datas = (type *)memCtl(vm, buf->datas, oldSize, newSize);        \
+        }                                                                         \
+        uint32_t cnt = 0;                                                         \
+        while (cnt < fillCnt)                                                     \
+        {                                                                         \
+            buf->datas[buf->cnt++] = data;                                        \
+            ++cnt;                                                                \
+        }                                                                         \
+    }                                                                             \
+                                                                                  \
     void type##BufferPut(VM *vm, type##Buffer *buf, type data)                    \
-    {                                                                            \
-        type##BufferFill(vm, buf, data, 1);                                      \
-    }                                                                            \
-                                                                                 \
+    {                                                                             \
+        type##BufferFill(vm, buf, data, 1);                                       \
+    }                                                                             \
+                                                                                  \
     void type##BufferClear(VM *vm, type##Buffer *buf)                             \
-    {                                                                            \
-        if (buf->cnt == 0)                                                       \
-            return;                                                              \
-        size_t oldSize = buf->cap * sizeof(buf->datas[0]);                       \
-        memCtl(vm, buf->datas, oldSize, 0);                                      \
-        type##BufferInit(buf);                                                   \
+    {                                                                             \
+        size_t oldSize = buf->cap * sizeof(buf->datas[0]);                        \
+        memCtl(vm, buf->datas, oldSize, 0);                                       \
+        type##BufferInit(buf);                                                    \
     }
 
 // 类型定义以及函数声明
@@ -118,7 +116,7 @@ typedef enum
 
 // 符号表清空和通用报错函数声明
 void symbolTableClear(VM *vm, SymbolTable *st);
-void errorReport(Parser *parser, ErrorType et, const char *fmt, ...);
+void errorReport(void *parser, ErrorType et, const char *fmt, ...);
 
 // 报错类型宏定义
 #define IO_ERROR(...) errorReport(NULL, ERROR_IO, __VA_ARGS__)

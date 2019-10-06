@@ -18,13 +18,14 @@ struct keywordToken
 struct keywordToken keywords[] = {
     {"if", 2, TOKEN_IF},
     {"is", 2, TOKEN_IS},
-    {"inc", 3, TOKEN_INC},
+    {"inc", 3, TOKEN_INCLUDE},
     {"auto", 4, TOKEN_AUTO},
     {"func", 4, TOKEN_FUNC},
     {"else", 4, TOKEN_ELSE},
     {"true", 4, TOKEN_TRUE},
     {"loop", 4, TOKEN_LOOP},
     {"none", 4, TOKEN_NONE},
+    {"this", 4, TOKEN_THIS},
     {"false", 5, TOKEN_FALSE},
     {"break", 5, TOKEN_BREAK},
     {"model", 5, TOKEN_MODEL},
@@ -42,7 +43,7 @@ static TokenType typeFromWord(const char *start, uint32_t size)
     while (NULL != keywords[idx].keyword)
     {
         if ((size == keywords[idx].size) &&
-            (0 == memcpy(keywords[idx].keyword, start, size)))
+            (0 == memcmp(keywords[idx].keyword, start, size)))
         {
             return keywords[idx].token;
         }
@@ -90,9 +91,9 @@ static void skipBlanks(Parser *parser)
 }
 
 // 解析标识符
-static parseId(Parser *parser, TokenType type)
+static void parseId(Parser *parser, TokenType type)
 {
-    while (isalnum(parser->curChar) || '-' == parser->curChar)
+    while (isalnum(parser->curChar) || '_' == parser->curChar)
     {
         getNextChar(parser);
     }
@@ -129,11 +130,11 @@ static void parseUnicodeCodePoint(Parser *parser, ByteBuffer *buf)
         {
             digit = parser->curChar - '0';
         }
-        else if (parser->curChar >= 'A' && parser->curChar <= 'Z')
+        else if (parser->curChar >= 'A' && parser->curChar <= 'F')
         {
             digit = parser->curChar - 'A' + 10;
         }
-        else if (parser->curChar >= 'a' && parser->curChar <= 'z')
+        else if (parser->curChar >= 'a' && parser->curChar <= 'f')
         {
             digit = parser->curChar - 'a' + 10;
         }
@@ -231,7 +232,7 @@ static void parseString(Parser *parser)
             ByteBufferPut(parser->vm, &sb, parser->curChar);
         }
     }
-    ByteBufferClear(parser, &sb);
+    ByteBufferClear(parser->vm, &sb);
 }
 
 // 跳过一行
@@ -300,7 +301,7 @@ void getNextToken(Parser *parser)
         case ',':
             parser->curToken.type = TOKEN_COMMA;
             break;
-        case ';':
+        case ':':
             parser->curToken.type = TOKEN_COLON;
             break;
         case '(':
@@ -338,10 +339,10 @@ void getNextToken(Parser *parser)
         case '.':
             if (matchNextChar(parser, '.'))
             {
-                if (!matchNextChar(parser, '.'))
-                {
-                    LEX_ERROR(parser, "range operator error: expect \"...\" but got \"..\"!");
-                }
+                // if (!matchNextChar(parser, '.'))
+                // {
+                //     LEX_ERROR(parser, "range operator error: expect \"...\" but got \"..\"!");
+                // }
                 parser->curToken.type = TOKEN_RANGE_DOT;
             }
             else
@@ -356,7 +357,7 @@ void getNextToken(Parser *parser)
             }
             else
             {
-                parser->curToken.type = TOKEN_ASSIN;
+                parser->curToken.type = TOKEN_ASSIGN;
             }
             break;
         case '+':
@@ -463,7 +464,7 @@ void getNextToken(Parser *parser)
                     parser->curToken.start = parser->nextChar - 1;
                     continue;
                 }
-                LEX_ERROR(parser, "unsupport char: '%c', quit.", parser->curToken.start);
+                LEX_ERROR(parser, "unsupport char: '%c', quit.", parser->curChar);
             }
             return;
         }
@@ -523,4 +524,3 @@ void initParser(VM *vm, Parser *parser, const char *file, const char *source)
     parser->rightParenNumofIE = 0;
     parser->vm = vm;
 }
-

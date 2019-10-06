@@ -2,11 +2,11 @@
 
 CC = gcc
 
-CFLAGS = -g -lm -Wall -I cli  -I include -I parser -I vm -I test -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -fgnu89-inline
+CFLAGS = -g -lm -Wall -I cli  -I include -I parser -I vm -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -fgnu89-inline
 
 TARGET = newlan
 
-DIRS = cli include parser vm test
+DIRS = cli include parser vm
 
 CFILES = $(foreach dir, $(DIRS), $(wildcard $(dir)/*.c))
 

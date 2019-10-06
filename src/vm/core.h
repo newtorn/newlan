@@ -3,6 +3,6 @@
 
 // 源代码读取函数声明
 extern char *rootDir;
-char *readSourceFile(const char *path);
+char *readFile(const char *path);
 
 #endif

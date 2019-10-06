@@ -1,13 +1,14 @@
+#include "core.h"
 #include "vm.h"
 #include "utils.h"
-#include "core.h"
 #include <string.h>
 #include <sys/stat.h>
 
 // 根目录
 char *rootDir = NULL;
 
-char *readSourceFile(const char *path)
+// 读取源文件
+char *readFile(const char *path)
 {
     FILE *fptr = fopen(path, "r");
     if (NULL == fptr)

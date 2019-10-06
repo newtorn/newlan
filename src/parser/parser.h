@@ -27,17 +27,17 @@ typedef enum
     TOKEN_NONE,     // none
 
     // 模块相关
-    TOKEN_MODEL,  // model
-    TOKEN_THIS,   // this
-    TOKEN_INC,    // inc
-    TOKEN_STATIC, // static
-    TOKEN_IS,     // is
-    TOKEN_SUPER,  // super
-    TOKEN_IMPORT, // import
+    TOKEN_MODEL,   // model
+    TOKEN_THIS,    // this
+    TOKEN_INCLUDE, // inc
+    TOKEN_STATIC,  // static
+    TOKEN_IS,      // is
+    TOKEN_SUPER,   // super
+    TOKEN_IMPORT,  // import
 
     // 分隔符
     TOKEN_COMMA,         // ,
-    TOKEN_COLON,         // ;
+    TOKEN_COLON,         // :
     TOKEN_LEFT_PAREN,    // (
     TOKEN_RIGHT_PAREN,   // )
     TOKEN_LEFT_BRACKET,  // [
@@ -56,7 +56,7 @@ typedef enum
     TOKEN_MOD, // %
 
     // 赋值运算符
-    TOKEN_ASSIN, // =
+    TOKEN_ASSIGN, // =
 
     // 位运算符
     TOKEN_BIT_AND,         // &
@@ -105,13 +105,13 @@ struct parser
     Token preToken;
 
     // Interpolation expression expect right parenthese number
-    uint32_t rightParenNumofIE;
-
+    int rightParenNumofIE;
+    struct parser *parent;
     VM *vm;
 };
 
 // 公用函数声明
-#define PEEK_TOKEN(parser) parser->curToken.type
+#define PEEK_TOKEN(parserPtr) parserPtr->curToken.type
 char lookAheadChar(Parser *parser);
 void getNextToken(Parser *parser);
 bool matchToken(Parser *parser, TokenType expected);

@@ -38,10 +38,10 @@ uint32_t roundUpToPowerOf2(uint32_t n)
 }
 
 // 缓冲类型处理函数定义
+DEFINE_BUFFER_FUNC(String)
 DEFINE_BUFFER_FUNC(Int)
 DEFINE_BUFFER_FUNC(Char)
 DEFINE_BUFFER_FUNC(Byte)
-DEFINE_BUFFER_FUNC(String)
 
 // 符号表清空
 void symbolTableClear(VM *vm, SymbolTable *st)
@@ -55,7 +55,7 @@ void symbolTableClear(VM *vm, SymbolTable *st)
 }
 
 // 通用报错函数
-void errorReport(Parser *parser, ErrorType et, const char *fmt, ...)
+void errorReport(void *parser, ErrorType et, const char *fmt, ...)
 {
     char buf[DEFAULT_BUFFER_SIZE] = {'\0'};
     va_list ap;
@@ -72,7 +72,7 @@ void errorReport(Parser *parser, ErrorType et, const char *fmt, ...)
     case ERROR_LEX:
     case ERROR_COMPILE:
         ASSERT(parser != NULL, "parser is null!");
-        fprintf(stderr, "%s:%d \"%s\"\n", parser->file, parser->preToken.lineNum, buf);
+        fprintf(stderr, "%s:%d \"%s\"\n", ((Parser*)parser)->file, ((Parser*)parser)->preToken.lineNum, buf);
         break;
     case ERROR_RUNTIME:
         fprintf(stderr, "%s\n", buf);

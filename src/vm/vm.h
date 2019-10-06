@@ -10,7 +10,7 @@ struct vm
 };
 
 // 初始化虚拟机和创建虚拟机函数声明
-void initVM(VM *);
+void initVM(VM *vm);
 VM *makeVM(void);
 
 #endif
