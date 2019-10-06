@@ -8,11 +8,11 @@
 
 void test_utils()
 {
-    int idx;
+    uint32_t idx;
     VM *vm = makeVM();
     char str[] = "HELLOWORLD";
 
-    CharBuffer *cb = ALLOCATE(vm, Char);
+    CharBuffer *cb = ALLOCATE(vm, CharBuffer);
     CharBufferInit(cb);
 
     idx = 0;
@@ -44,7 +44,7 @@ void test_utils()
 
 void test_utf8()
 {
-    int idx;
+    uint32_t idx;
     VM *vm = makeVM();
     uint8_t *buf = ALLOCATE_ARRAY(vm, uint8_t, 2);
 

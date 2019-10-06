@@ -128,7 +128,7 @@ uint32_t getByteNumOfDecodeUtf8(uint8_t high_byte)
 // 从连续字节缓冲解码并返回解码值
 // 缓冲区以大端字节序解码
 // 如果不是UTF-8编码，返回-1
-int decodeUtf8(const uint8_t *buf, uint32_t maxlen)
+int decodeUtf8(const uint8_t *buf, uint32_t maxsize)
 {
     if (*buf < 0x7f)
     {
@@ -160,7 +160,7 @@ int decodeUtf8(const uint8_t *buf, uint32_t maxlen)
         return -1;
     }
 
-    if (restBytes > maxlen - 1)
+    if (restBytes > maxsize - 1)
     {
         return -1;
     }
