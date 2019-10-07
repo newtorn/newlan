@@ -2,10 +2,11 @@
 #include "common.h"
 #include "utils.h"
 #include "utf8.h"
+#include "objstring.h"
 #include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
 // 关键字
 struct keywordToken
@@ -88,6 +89,57 @@ static void skipBlanks(Parser *parser)
         }
         getNextChar(parser);
     }
+}
+
+// 跳过一行
+static void skipLine(Parser *parser)
+{
+    getNextChar(parser);
+    while ('\0' != parser->curChar)
+    {
+        if ('\n' == parser->curChar)
+        {
+            parser->curToken.lineNum++;
+            getNextChar(parser);
+            break;
+        }
+        getNextChar(parser);
+    }
+}
+
+// 跳过行注释或块注释
+static void skipComment(Parser *parser)
+{
+    char nextChar = lookAheadChar(parser);
+    if ('/' == parser->curChar)
+    {
+        skipLine(parser);
+    }
+    else
+    {
+        while ('*' != nextChar && '\0' != nextChar)
+        {
+            getNextChar(parser);
+            if ('\n' == parser->curChar)
+            {
+                parser->curToken.lineNum++;
+            }
+            nextChar = lookAheadChar(parser);
+        }
+        if (matchNextChar(parser, '*'))
+        {
+            if (!matchNextChar(parser, '/'))
+            {
+                LEX_ERROR(parser, "expect '/' after '*'!");
+            }
+            getNextChar(parser);
+        }
+        else
+        {
+            LEX_ERROR(parser, "unterminated block comment, expect \"*/\" before file end!");
+        }
+    }
+    skipBlanks(parser);
 }
 
 // 解析标识符
@@ -232,58 +284,86 @@ static void parseString(Parser *parser)
             ByteBufferPut(parser->vm, &sb, parser->curChar);
         }
     }
+    ObjectString *os = makeObjectString(parser->vm, (const char *)sb.datas, sb.cnt);
+    parser->curToken.value = OBJECT_TO_VALUE(os);
     ByteBufferClear(parser->vm, &sb);
 }
 
-// 跳过一行
-static void skipLine(Parser *parser)
+// 解析十六进制数字
+static void parseHexNumber(Parser *parser)
 {
-    getNextChar(parser);
-    while ('\0' != parser->curChar)
+    while (isxdigit(parser->curChar))
     {
-        if ('\n' == parser->curChar)
-        {
-            parser->curToken.lineNum++;
-            getNextChar(parser);
-            break;
-        }
         getNextChar(parser);
     }
 }
 
-// 跳过行注释或块注释
-static void skipComment(Parser *parser)
+// 解析十进制数字
+static void parseDecNumber(Parser *parser)
 {
-    char nextChar = lookAheadChar(parser);
-    if ('/' == parser->curChar)
+    while (isdigit(parser->curChar))
     {
-        skipLine(parser);
+        getNextChar(parser);
+    }
+    if ('.' == parser->curChar && isdigit(lookAheadChar(parser)))
+    {
+        getNextChar(parser);
+        while (isdigit(parser->curChar))
+        {
+            getNextChar(parser);
+        }
+    }
+}
+
+// 解析八进制数字
+static void parseOctNumber(Parser *parser)
+{
+    while ('0' <= parser->curChar && parser->curChar <= '8')
+    {
+        getNextChar(parser);
+    }
+}
+
+// 解析二进制数字
+static void parseBinNumber(Parser *parser)
+{
+    while ('0' == parser->curChar || '1' == parser->curChar)
+    {
+        getNextChar(parser);
+    }
+}
+
+// 解析二进制、八进制、十进制、十六进制数字
+static void parseNumber(Parser *parser)
+{
+    if ('0' == parser->curChar && matchNextChar(parser, 'x'))
+    {
+        // 解析十六进制 前缀0x
+        getNextChar(parser);
+        parseHexNumber(parser);
+        parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start, NULL, 16));
+    }
+    else if ('0' == parser->curChar && matchNextChar(parser, 'b'))
+    {
+        // 解析二进制 前缀0b
+        getNextChar(parser);
+        parseBinNumber(parser);
+        parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start, NULL, 2));
+    }
+    else if ('0' == parser->curChar && isdigit(lookAheadChar(parser)))
+    {
+        // 解析十六进制 前缀0
+        parseOctNumber(parser);
+        parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start, NULL, 8));
     }
     else
     {
-        while ('*' != nextChar && '\0' != nextChar)
-        {
-            getNextChar(parser);
-            if ('\n' == parser->curChar)
-            {
-                parser->curToken.lineNum++;
-            }
-            nextChar = lookAheadChar(parser);
-        }
-        if (matchNextChar(parser, '*'))
-        {
-            if (!matchNextChar(parser, '/'))
-            {
-                LEX_ERROR(parser, "expect '/' after '*'!");
-            }
-            getNextChar(parser);
-        }
-        else
-        {
-            LEX_ERROR(parser, "unterminated block comment, expect \"*/\" before file end!");
-        }
+        // 解析十进制
+        parseDecNumber(parser);
+        parser->curToken.value = NUMBER_TO_VALUE(strtod(parser->curToken.start, NULL));
     }
-    skipBlanks(parser);
+    parser->curToken.size = (uint32_t)(parser->nextChar - parser->curToken.start - 1);
+    parser->curToken.type = TOKEN_NUMBER;
 }
 
 // 获取下一个标记
@@ -456,6 +536,10 @@ void getNextToken(Parser *parser)
             {
                 parseId(parser, TOKEN_UNKNOWN);
             }
+            else if (isdigit(parser->curChar))
+            {
+                parseNumber(parser);
+            }
             else
             {
                 if ('#' == parser->curChar && matchNextChar(parser, '!'))
@@ -510,7 +594,7 @@ void consumeNextToken(Parser *parser, TokenType expected, const char *errMsg)
 }
 
 // 初始化词法分析器
-void initParser(VM *vm, Parser *parser, const char *file, const char *source)
+void initParser(VM *vm, Parser *parser, const char *file, const char *source, ObjectModule *om)
 {
     parser->file = file;
     parser->source = source;
@@ -523,4 +607,5 @@ void initParser(VM *vm, Parser *parser, const char *file, const char *source)
     parser->preToken = parser->curToken;
     parser->rightParenNumofIE = 0;
     parser->vm = vm;
+    parser->curModule = om;
 }

@@ -12,11 +12,10 @@ CFILES = $(foreach dir, $(DIRS), $(wildcard $(dir)/*.c))
 
 OBJS = $(patsubst %.c, %.o, $(CFILES))
 
-TARGET : $(OBJS)
+$(TARGET) : $(OBJS)
 	$(CC) -o $(TARGET) $(OBJS) $(CFLAGS)
 
 clean :
 	-$(RM) $(TARGET) $(OBJS)
-
-rebuild:
-	clean $(TARGET)
+	
+rebuild: clean $(TARGET)

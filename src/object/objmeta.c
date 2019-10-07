@@ -1,7 +1,7 @@
 #include "objmeta.h"
 #include "objfunction.h"
 #include "vm.h"
-#include "model.h"
+#include "objmodel.h"
 #include <string.h>
 
 // 创建模块
@@ -10,7 +10,7 @@ ObjectModule *makeObjectModule(VM *vm, const char *name)
     ObjectModule *om = ALLOCATE(vm, ObjectModule);
     if (NULL != om)
     {
-        initObectHeader(vm, &(om->objectHeader), OT_MODULE, NULL);
+        initObjectHeader(vm, &(om->objectHeader), OT_MODULE, NULL);
 
         StringBufferInit(&(om->varNames));
         ValueBufferInit(&(om->varValues));

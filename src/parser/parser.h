@@ -2,6 +2,7 @@
 #define _PARSER_PARSER_H
 #include "common.h"
 #include "vm.h"
+#include "objmodel.h"
 
 // 标记类型
 typedef enum
@@ -88,26 +89,28 @@ typedef enum
 // 标记结构
 typedef struct
 {
-    TokenType type;
-    const char *start;
-    uint32_t size;
-    uint32_t lineNum;
+    TokenType type;    // 标记类型
+    const char *start; // 标记字符在源码中的开始地址
+    uint32_t size;     // 标记字符串大小
+    uint32_t lineNum;  // 标记所在行号
+    Value value;       // 标记的值
 } Token;
 
 // 词法分析器结构
 struct parser
 {
-    const char *file;
-    const char *source;
-    const char *nextChar;
-    char curChar;
-    Token curToken;
-    Token preToken;
+    const char *file;        // 源码文件名
+    const char *source;      // 源码串地址
+    const char *nextChar;    // 下一个字符在源码串中的地址
+    char curChar;            // 当前字符
+    Token curToken;          // 当前标记
+    Token preToken;          // 前一个标记
+    ObjectModule *curModule; // 词法分析器所在的模块
 
     // Interpolation expression expect right parenthese number
-    int rightParenNumofIE;
-    struct parser *parent;
-    VM *vm;
+    int rightParenNumofIE; // 内嵌表达式期望的右括号数量
+    struct parser *parent; // 父词法分析器
+    VM *vm;                // 词法分析器所在的虚拟机
 };
 
 // 公用函数声明
@@ -119,6 +122,6 @@ void consumeCurToken(Parser *parser, TokenType expected, const char *errMsg);
 void consumeNextToken(Parser *parser, TokenType expected, const char *errMsg);
 uint32_t getByteNumOfEncodeUtf8(int value);
 uint8_t encodeUtf8(uint8_t *buf, int value);
-void initParser(VM *vm, Parser *parser, const char *file, const char *source);
+void initParser(VM *vm, Parser *parser, const char *file, const char *source, ObjectModule *om);
 
 #endif

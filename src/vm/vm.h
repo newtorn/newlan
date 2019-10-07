@@ -9,6 +9,7 @@ struct vm
     uint32_t allBytes;        // 总分配空间
     Parser *curParser;        // 当前词法分析器
     Model *stringModel;       // 字符串模型链
+    Model *functionModel;     // 函数模型链
     ObjectHeader *allObjects; // 所有已分配的对象链
 };
 

@@ -14,6 +14,7 @@ typedef enum
     OT_MODULE,
     OT_CLOSURE,
     OT_UPVALUE,
+    OT_INSTANCE,
     OT_FUNCTION
 } ObjectType;
 
