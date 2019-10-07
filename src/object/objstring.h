@@ -15,4 +15,8 @@ uint32_t hashString(char *str, uint32_t size);
 void hashObjectString(ObjectString *os);
 ObjectString *makeObjectString(VM *vm, const char *str, uint32_t size);
 
+// FNV-1a算法相关常量
+#define OFFSET_BASIS 2166136261
+#define FNV_PRIME_BIT32 16777619
+
 #endif

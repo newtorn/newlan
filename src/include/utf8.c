@@ -5,7 +5,7 @@
 // 要编码的值超过范围则返回0
 uint32_t getByteNumOfEncodeUtf8(int value)
 {
-    ASSERT(value > 0, "Can't encode negative value!");
+    ASSERT(value >= 0, "Can't encode negative value!");
 
     if (value <= 0x7f)
     {
@@ -42,7 +42,7 @@ uint32_t getByteNumOfEncodeUtf8(int value)
 // 缓冲区以大端字节序村粗，高字节在前，低字节在后
 uint8_t encodeUtf8(uint8_t *buf, int value)
 {
-    ASSERT(value > 0, "Can't encode negative value!");
+    ASSERT(value >= 0, "Can't encode negative value!");
 
     if (value <= 0x7f)
     {
