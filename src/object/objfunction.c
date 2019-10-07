@@ -23,7 +23,7 @@ ObjectFunction *makeObjectFunction(VM *vm, ObjectModule *om, uint32_t maxStackSl
     }
     else
     {
-        MEM_ERROR("allocate ObjectFunction failed!");
+        MEM_ERROR("allocate ObjectFunction failed");
     }
     return of;
 }
@@ -44,7 +44,7 @@ ObjectClosure *makeObjectClosure(VM *vm, ObjectFunction *of)
     }
     else
     {
-        MEM_ERROR("allocate ObjectClosure failed!");
+        MEM_ERROR("allocate ObjectClosure failed");
     }
     return oc;
 }
@@ -62,7 +62,7 @@ ObjectUpvalue *makeObjectUpvalue(VM *vm, Value *localVar)
     }
     else
     {
-        MEM_ERROR("allocate ObjectUpvalue failed!");
+        MEM_ERROR("allocate ObjectUpvalue failed");
     }
     return ou;
 }

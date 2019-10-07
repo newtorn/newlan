@@ -70,7 +70,7 @@ typedef struct
             size_t oldSize = buf->cap * sizeof(type);                             \
             buf->cap = roundUpToPowerOf2(newCnt);                                 \
             size_t newSize = buf->cap * sizeof(type);                             \
-            ASSERT(newSize > oldSize, "faint...memory allocate!");                \
+            ASSERT(newSize > oldSize, "faint...memory allocate");                \
             buf->datas = (type *)memCtl(vm, buf->datas, oldSize, newSize);        \
         }                                                                         \
         uint32_t cnt = 0;                                                         \
@@ -123,6 +123,6 @@ void errorReport(void *parser, ErrorType et, const char *fmt, ...);
 #define MEM_ERROR(...) errorReport(NULL, ERROR_MEM, __VA_ARGS__)
 #define LEX_ERROR(parser, ...) errorReport(parser, ERROR_LEX, __VA_ARGS__)
 #define COMPILE_ERROR(parser, ...) errorReport(parser, ERROR_COMPILE, __VA_ARGS__)
-#define RUNTIME_ERROR(...) errorReport(NULL, ERROR_RUNTIME, __VA__ARGS__)
+#define RUNTIME_ERROR(...) errorReport(NULL, ERROR_RUNTIME, __VA_ARGS__)
 
 #endif

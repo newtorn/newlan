@@ -130,13 +130,13 @@ static void skipComment(Parser *parser)
         {
             if (!matchNextChar(parser, '/'))
             {
-                LEX_ERROR(parser, "expect '/' after '*'!");
+                LEX_ERROR(parser, "expect '/' after '*'");
             }
             getNextChar(parser);
         }
         else
         {
-            LEX_ERROR(parser, "unterminated block comment, expect \"*/\" before file end!");
+            LEX_ERROR(parser, "unterminated block comment, expect \"*/\" before file end");
         }
     }
     skipBlanks(parser);
@@ -176,7 +176,7 @@ static void parseUnicodeCodePoint(Parser *parser, ByteBuffer *buf)
         getNextChar(parser);
         if ('\0' == parser->curChar)
         {
-            LEX_ERROR(parser, "unterminated unicode!");
+            LEX_ERROR(parser, "unterminated unicode");
         }
         if (parser->curChar >= '0' && parser->curChar <= '9')
         {
@@ -192,13 +192,13 @@ static void parseUnicodeCodePoint(Parser *parser, ByteBuffer *buf)
         }
         else
         {
-            LEX_ERROR(parser, "invalid unicode!");
+            LEX_ERROR(parser, "invalid unicode");
         }
         value = value * 16 | digit;
     }
 
     uint32_t byteNum = getByteNumOfEncodeUtf8(value);
-    ASSERT(byteNum != 0, "utf-8 encode byte num should between 1 and 4!");
+    ASSERT(byteNum != 0, "utf-8 encode byte num should between 1 and 4");
 
     ByteBufferFill(parser->vm, buf, 0, byteNum);        // pos: cnt = cnt + byteNum
     encodeUtf8(buf->datas + buf->cnt - byteNum, value); // pos: datas[cnt - byteNum]
@@ -215,7 +215,7 @@ static void parseString(Parser *parser)
 
         if ('\0' == parser->curChar)
         {
-            LEX_ERROR(parser, "unterminated string!");
+            LEX_ERROR(parser, "unterminated string");
         }
 
         if ('"' == parser->curChar)
@@ -228,11 +228,11 @@ static void parseString(Parser *parser)
         {
             if (!matchNextChar(parser, '('))
             {
-                LEX_ERROR(parser, "'%' should followed by '('!");
+                LEX_ERROR(parser, "'%' should followed by '('");
             }
             if (parser->rightParenNumofIE > 0)
             {
-                COMPILE_ERROR(parser, "unsupport nest interpalotion expression!");
+                COMPILE_ERROR(parser, "unsupport nest interpalotion expression");
             }
             parser->rightParenNumofIE = 1;
             parser->curToken.type = TOKEN_INTERPOLATION;
@@ -347,7 +347,7 @@ static void parseNumber(Parser *parser)
         }
         else
         {
-            LEX_ERROR(parser, "expect hexadecimal char after \"0x\", but got '%c'!", lookAheadChar(parser));
+            LEX_ERROR(parser, "expect hexadecimal char after \"0x\", but got '%c'", lookAheadChar(parser));
         }
     }
     else if ('0' == parser->curChar && matchNextChar(parser, 'b'))
@@ -361,7 +361,7 @@ static void parseNumber(Parser *parser)
         }
         else
         {
-            LEX_ERROR(parser, "expect binary char after \"0b\", but got '%c'!", lookAheadChar(parser));
+            LEX_ERROR(parser, "expect binary char after \"0b\", but got '%c'", lookAheadChar(parser));
         }
     }
     else if ('0' == parser->curChar && isdigit(lookAheadChar(parser)))
@@ -374,7 +374,7 @@ static void parseNumber(Parser *parser)
         }
         else
         {
-            LEX_ERROR(parser, "expect octal char after \"0\", but got '%c'!", lookAheadChar(parser));
+            LEX_ERROR(parser, "expect octal char after \"0\", but got '%c'", lookAheadChar(parser));
         }
     }
     else
@@ -442,7 +442,7 @@ void getNextToken(Parser *parser)
             {
                 if (!matchNextChar(parser, '.'))
                 {
-                    LEX_ERROR(parser, "range operator error: expect \"...\" but got \"..\"!");
+                    LEX_ERROR(parser, "range operator error: expect \"...\" but got \"..\"");
                 }
                 parser->curToken.type = TOKEN_RANGE;
             }
@@ -569,7 +569,7 @@ void getNextToken(Parser *parser)
                     parser->curToken.start = parser->nextChar - 1;
                     continue;
                 }
-                LEX_ERROR(parser, "unsupport char: '%c', quit.", parser->curChar);
+                LEX_ERROR(parser, "unsupport char: '%c'", parser->curChar);
             }
             return;
         }

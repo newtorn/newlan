@@ -23,7 +23,7 @@ ObjectModule *makeObjectModule(VM *vm, const char *name)
     }
     else
     {
-        MEM_ERROR("allocate ObjectModule failed!");
+        MEM_ERROR("allocate ObjectModule failed");
     }
     return om;
 }
@@ -43,7 +43,7 @@ ObjectInstance *makeObjectInstance(VM *vm, Model *model)
     }
     else
     {
-        MEM_ERROR("allocate ObjectInstance failed!");
+        MEM_ERROR("allocate ObjectInstance failed");
     }
     return oi;
 }

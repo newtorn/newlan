@@ -13,7 +13,7 @@ char *readFile(const char *path)
     FILE *fptr = fopen(path, "r");
     if (NULL == fptr)
     {
-        IO_ERROR("Could not open file \"%s\".\n", path);
+        IO_ERROR("could not open file \"%s\".", path);
     }
 
     struct stat fileStat;
@@ -22,13 +22,13 @@ char *readFile(const char *path)
     char *fileData = (char *)malloc(fileSize + 1);
     if (NULL == fileData)
     {
-        MEM_ERROR("Could not allocate memory for reading file \"%s\".\n", path);
+        MEM_ERROR("could not allocate memory for reading file \"%s\"", path);
     }
 
     size_t readSize = fread(fileData, sizeof(char), fileSize, fptr);
     if (readSize < fileSize)
     {
-        IO_ERROR("Could not read file \"%s\".\n", path);
+        IO_ERROR("could not read file \"%s\"", path);
     }
     fileData[fileSize] = '\0';
 

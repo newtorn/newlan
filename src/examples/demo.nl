@@ -80,5 +80,5 @@ auto t = sum(12, 13)
 System.print(t)
 
 loop i (1...10) {
-    System.print(i)
+    System.print("count %(i) to end.")
 }
