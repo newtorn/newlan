@@ -31,7 +31,7 @@ char* tokenReprs[] = {
     "LEFT_BRACE",
     "RIGHT_BRACE",
     "DOT",
-    "RANGE_DOT",
+    "RANGE",
     "ADD",
     "SUB",
     "MUL",

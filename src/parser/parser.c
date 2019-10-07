@@ -339,22 +339,43 @@ static void parseNumber(Parser *parser)
     if ('0' == parser->curChar && matchNextChar(parser, 'x'))
     {
         // 解析十六进制 前缀0x
-        getNextChar(parser);
-        parseHexNumber(parser);
-        parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start, NULL, 16));
+        if (isxdigit(lookAheadChar(parser)))
+        {
+            getNextChar(parser);
+            parseHexNumber(parser);
+            parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start+2, NULL, 16));
+        }
+        else
+        {
+            LEX_ERROR(parser, "expect hexadecimal char after \"0x\", but got '%c'!", lookAheadChar(parser));
+        }
     }
     else if ('0' == parser->curChar && matchNextChar(parser, 'b'))
     {
         // 解析二进制 前缀0b
-        getNextChar(parser);
-        parseBinNumber(parser);
-        parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start, NULL, 2));
+        if ('0' == lookAheadChar(parser) || '1' == lookAheadChar(parser))
+        {
+            getNextChar(parser);
+            parseBinNumber(parser);
+            parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start+2, NULL, 2));
+        }
+        else
+        {
+            LEX_ERROR(parser, "expect binary char after \"0b\", but got '%c'!", lookAheadChar(parser));
+        }
     }
     else if ('0' == parser->curChar && isdigit(lookAheadChar(parser)))
     {
-        // 解析十六进制 前缀0
-        parseOctNumber(parser);
-        parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start, NULL, 8));
+        // 解析八进制 前缀0
+        if ('0' <= lookAheadChar(parser) && lookAheadChar(parser) < '8')
+        {
+            parseOctNumber(parser);
+            parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start+1, NULL, 8));
+        }
+        else
+        {
+            LEX_ERROR(parser, "expect octal char after \"0\", but got '%c'!", lookAheadChar(parser));
+        }
     }
     else
     {
@@ -419,11 +440,11 @@ void getNextToken(Parser *parser)
         case '.':
             if (matchNextChar(parser, '.'))
             {
-                // if (!matchNextChar(parser, '.'))
-                // {
-                //     LEX_ERROR(parser, "range operator error: expect \"...\" but got \"..\"!");
-                // }
-                parser->curToken.type = TOKEN_RANGE_DOT;
+                if (!matchNextChar(parser, '.'))
+                {
+                    LEX_ERROR(parser, "range operator error: expect \"...\" but got \"..\"!");
+                }
+                parser->curToken.type = TOKEN_RANGE;
             }
             else
             {

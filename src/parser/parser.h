@@ -46,7 +46,7 @@ typedef enum
     TOKEN_LEFT_BRACE,    // {
     TOKEN_RIGHT_BRACE,   // }
     TOKEN_DOT,           // .
-    TOKEN_RANGE_DOT,     // ...
+    TOKEN_RANGE,         // ...
 
     // 双目运算符
     TOKEN_ADD, // +

@@ -67,7 +67,9 @@ else {
 }
 
 auto i = int("123")
-auto s = str(0x999)
+auto s = str(0x3f4E5a)
+auto s = str(0b1011)
+auto s = str(0777)
 
 // This is a primitive function
 func sum(a, b) {
@@ -76,3 +78,7 @@ func sum(a, b) {
 
 auto t = sum(12, 13)
 System.print(t)
+
+loop i (1...10) {
+    System.print(i)
+}

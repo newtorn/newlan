@@ -5,7 +5,7 @@
 // 字符串对象
 typedef struct
 {
-    ObjectHeader *objectHeader; // 对象头
+    ObjectHeader objectHeader; // 对象头
     uint32_t hashCode; // 字符串哈希值
     CharValue value; // 字符串缓冲区
 } ObjectString;
