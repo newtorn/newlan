@@ -33,7 +33,7 @@
 |    getter定义    |               getterDef -> 'static'? id block                |            逻辑上用来返回模型的属性值，但不受限制            |
 |    setter定义    |        setterDef -> 'static'? id '=' '(' id ')' block        |            常用来修改模型的属性值，只支持一个参数            |
 |   模型行为定义   |     actionsDef -> (actionDef \| getterDef \| setterDef)      |                                                              |
-|     模型定义     | modelDef -> 'model' id ('inc' id)? '{' fieldDef actionsDef '}' |                      inc表示包含父模型                       |
+|     模型定义     | modelDef -> 'model' id ('inc' id)? '{' segDef actionsDef '}' |                      inc表示包含父模型                       |
 
 ```
 #/usr/bin/newlan

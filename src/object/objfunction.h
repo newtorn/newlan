@@ -1,0 +1,4 @@
+#ifndef _OBJECT_OBJFUNCTION_H
+#define _OBJECT_OBJFUNCTION_H
+
+#endif

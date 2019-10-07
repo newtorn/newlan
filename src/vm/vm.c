@@ -5,6 +5,7 @@
 void initVM(VM *vm)
 {
     vm->allBytes = 0;
+    vm->allObjects = NULL;
     vm->curParser = NULL;
 }
 
