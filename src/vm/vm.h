@@ -12,6 +12,7 @@ struct vm
     Model *functionModel;     // 函数模型链
     Model *listModel;         // 列表模型链
     Model *mapModel;          // 字典模型链
+    Model *rangeModel;        // 范围模型链
     ObjectHeader *allObjects; // 所有已分配的对象链
 };
 
