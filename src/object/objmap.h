@@ -23,8 +23,10 @@ typedef struct
 // 哈希表相关函数声明
 ObjectMap *makeObjectMap(VM *vm);
 void mapSet(VM *vm, ObjectMap *om, Value k, Value v);
-Value mapGet(ObjectMap *om, Value k);
+Value mapGetByKey(ObjectMap *om, Value k);
 Value mapGetByValue(ObjectMap *om, Value v);
+bool mapHasKey(ObjectMap *om, Value k);
+bool mapHasValue(ObjectMap *om, Value v);
 void mapClear(VM *vm, ObjectMap *om);
 Value mapRemove(VM *vm, ObjectMap *om, Value k);
 

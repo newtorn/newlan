@@ -28,12 +28,7 @@ void setAdd(VM *vm, ObjectSet *os, Value v)
 // 是否含有该元素
 bool setHas(ObjectSet *os, Value v)
 {
-    Value val = mapGet(os->map, v);
-    if (VALUE_IS_UNDEFINED(val))
-    {
-        return false;
-    }
-    return valueIsEqual(val, os->PRESENT);
+    return mapHasKey(os->map, v);
 }
 
 // 清空集合

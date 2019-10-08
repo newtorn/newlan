@@ -198,7 +198,7 @@ void mapSet(VM *vm, ObjectMap *om, Value k, Value v)
 }
 
 // 获取键对应的值
-Value mapGet(ObjectMap *om, Value k)
+Value mapGetByKey(ObjectMap *om, Value k)
 {
     Entry *e = findEntryByKey(om, k);
     if (NULL == e)
@@ -217,6 +217,18 @@ Value mapGetByValue(ObjectMap *om, Value v)
         return VT_TO_VALUE(VT_UNDEFINED);
     }
     return e->key;
+}
+
+bool mapHasKey(ObjectMap *om, Value k)
+{
+    Entry *e = findEntryByKey(om, k);
+    return NULL != e;
+}
+
+bool mapHasValue(ObjectMap *om, Value v)
+{
+    Entry *e = findEntryByValue(om, v);
+    return NULL != e;
 }
 
 // 哈希表清空
