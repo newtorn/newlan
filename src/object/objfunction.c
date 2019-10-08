@@ -11,7 +11,7 @@ ObjectFunction *makeObjectFunction(VM *vm, ObjectModule *om, uint32_t maxStackSl
     {
         initObjectHeader(vm, &(of->objectHeader), OT_FUNCTION, vm->functionModel);
         ByteBufferInit(&(of->instrStream));
-        ValueBufferInit(&(of->constantPool));
+        ValueBufferInit(&(of->constants));
         of->module = om;
         of->maxStackSlot = maxStackSlot;
         of->upvalueNum = of->argNum = 0;

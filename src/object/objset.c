@@ -11,6 +11,7 @@ ObjectSet *makeObjectSet(VM *vm)
         initObjectHeader(vm, &(os->objectHeader), OT_SET, vm->setModel);
         initObjectHeader(vm, os->PRESENT.objectHeader, OT_MODEL, vm->objectModel);
         os->map = map;
+        os->PRESENT = VT_TO_VALUE(VT_NONE);
     }
     else
     {

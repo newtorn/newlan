@@ -15,7 +15,7 @@ typedef struct
 {
     ObjectHeader objectHeader; // 对象头
     ByteBuffer instrStream;    // 指令流
-    ValueBuffer constantPool;  // 常量池
+    ValueBuffer constants;  // 常量池
     ObjectModule *module;      // 所属模块
     uint32_t maxStackSlot;     // 使用的栈峰值
     uint32_t upvalueNum;       // 上值数量
