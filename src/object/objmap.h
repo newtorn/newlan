@@ -24,6 +24,7 @@ typedef struct
 ObjectMap *makeObjectMap(VM *vm);
 void mapSet(VM *vm, ObjectMap *om, Value k, Value v);
 Value mapGet(ObjectMap *om, Value k);
+Value mapGetByValue(ObjectMap *om, Value v);
 void mapClear(VM *vm, ObjectMap *om);
 Value mapRemove(VM *vm, ObjectMap *om, Value k);
 

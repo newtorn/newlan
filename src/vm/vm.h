@@ -16,6 +16,7 @@ typedef enum
 struct vm
 {
     Model *mapModel;            // 哈希表模型链
+    Model *setModel;            // 集合模型链
     Model *listModel;           // 列表模型链
     Model *noneModel;           // 空模型链
     Model *boolModel;           // 布尔模型链

@@ -6,6 +6,7 @@
 typedef enum
 {
     OT_MAP,
+    OT_SET,
     OT_LIST,
     OT_MODEL,
     OT_RANGE,

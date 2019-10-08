@@ -131,8 +131,8 @@ static void mapResize(VM *vm, ObjectMap *om, uint32_t newCap)
     }
 }
 
-// 在键值对链查找键值对
-static Entry *findEntry(ObjectMap *om, Value k)
+// 根据键在键值对链查找键值对
+static Entry *findEntryByKey(ObjectMap *om, Value k)
 {
     if (0 == om->cap)
     {
@@ -158,6 +158,27 @@ static Entry *findEntry(ObjectMap *om, Value k)
     }
 }
 
+// 根据值在键值对链查找键值对
+static Entry *findEntryByValue(ObjectMap *om, Value v)
+{
+    if (0 == om->cap)
+    {
+        return NULL;
+    }
+    uint32_t idx = 0;
+    Entry *e = NULL;
+    while (idx < om->cnt)
+    {
+        e = &(om->entries[idx++]);
+
+        if (valueIsEqual(e->value, v))
+        {
+            return e;
+        }
+    }
+    return NULL;
+}
+
 // 设置键对应的值
 void mapSet(VM *vm, ObjectMap *om, Value k, Value v)
 {
@@ -179,12 +200,23 @@ void mapSet(VM *vm, ObjectMap *om, Value k, Value v)
 // 获取键对应的值
 Value mapGet(ObjectMap *om, Value k)
 {
-    Entry *e = findEntry(om, k);
+    Entry *e = findEntryByKey(om, k);
     if (NULL == e)
     {
         return VT_TO_VALUE(VT_UNDEFINED);
     }
     return e->value;
+}
+
+// 获取值对应的键
+Value mapGetByValue(ObjectMap *om, Value v)
+{
+    Entry *e = findEntryByValue(om, v);
+    if (NULL == e)
+    {
+        return VT_TO_VALUE(VT_UNDEFINED);
+    }
+    return e->key;
 }
 
 // 哈希表清空
@@ -198,7 +230,7 @@ void mapClear(VM *vm, ObjectMap *om)
 // 删除键对应的键值对 伪删除
 Value mapRemove(VM *vm, ObjectMap *om, Value k)
 {
-    Entry *e = findEntry(om, k);
+    Entry *e = findEntryByKey(om, k);
     if (NULL == e)
     {
         return VT_TO_VALUE(VT_NONE);
