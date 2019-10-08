@@ -32,7 +32,10 @@ ObjectThread *makeObjectThread(VM *vm, ObjectClosure *oc)
 {
     ASSERT(NULL != oc, "ObjectClosure is NULL");
     Frame *frames = ALLOCATE_ARRAY(vm, Frame, INITIAL_FRAME_NUM);
+
+    // 加1供存储消息接收者
     uint32_t statckCap = roundUpToPowerOf2(oc->func->maxStackSlot + 1);
+    
     Value *newStack = ALLOCATE_ARRAY(vm, Value, statckCap);
     ObjectThread *ot = ALLOCATE(vm, ObjectThread);
     if (NULL != frames && NULL != newStack && NULL != ot)
