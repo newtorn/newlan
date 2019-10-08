@@ -19,6 +19,7 @@ struct keywordToken
 struct keywordToken keywords[] = {
     {"if", 2, TOKEN_IF},
     {"is", 2, TOKEN_IS},
+    {"in", 2, TOKEN_IN},
     {"inc", 3, TOKEN_INCLUDE},
     {"auto", 4, TOKEN_AUTO},
     {"func", 4, TOKEN_FUNC},
@@ -343,7 +344,7 @@ static void parseNumber(Parser *parser)
         {
             getNextChar(parser);
             parseHexNumber(parser);
-            parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start+2, NULL, 16));
+            parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start + 2, NULL, 16));
         }
         else
         {
@@ -357,7 +358,7 @@ static void parseNumber(Parser *parser)
         {
             getNextChar(parser);
             parseBinNumber(parser);
-            parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start+2, NULL, 2));
+            parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start + 2, NULL, 2));
         }
         else
         {
@@ -370,7 +371,7 @@ static void parseNumber(Parser *parser)
         if ('0' <= lookAheadChar(parser) && lookAheadChar(parser) < '8')
         {
             parseOctNumber(parser);
-            parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start+1, NULL, 8));
+            parser->curToken.value = NUMBER_TO_VALUE(strtol(parser->curToken.start + 1, NULL, 8));
         }
         else
         {

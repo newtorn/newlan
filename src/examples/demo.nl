@@ -1,5 +1,5 @@
 #!/usr/bin/newlan
-import Phone
+import phone inc Phone
 
 model iPhone inc Phone {
     auto version
@@ -50,6 +50,9 @@ auto ls1 = ["1", "2"]
 auto mp1 = {"xm": 27, "zs": 20}
 System.print(ls1[0])
 System.print(mp1["zs"])
+
+System.print("1" in ls1 ? "exist element!" : "not exist")
+System.print("sm" in mp1 ? "exist key!" : "not exist")
 
 loop i (ls1) {
     System.print(i)

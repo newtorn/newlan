@@ -15,6 +15,7 @@ char* tokenReprs[] = {
     "CONTINUE",
     "RETURN",
     "NONE",
+    "IN",
     "MODEL",
     "THIS",
     "INCLUDE",

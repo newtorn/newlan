@@ -26,6 +26,7 @@ typedef enum
     TOKEN_CONTINUE, // continue
     TOKEN_RETURN,   // return
     TOKEN_NONE,     // none
+    TOKEN_IN,       // in
 
     // 模块相关
     TOKEN_MODEL,   // model
