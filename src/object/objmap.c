@@ -100,29 +100,35 @@ static bool addEntry(Entry *entries, uint32_t cap, Value k, Value v)
 static void mapResize(VM *vm, ObjectMap *om, uint32_t newCap)
 {
     Entry *ne = ALLOCATE_ARRAY(vm, Entry, newCap);
-    uint32_t idx = 0;
-    while (idx < newCap)
+    if (NULL != ne)
     {
-        ne[idx].key = VT_TO_VALUE(VT_UNDEFINED);
-        ne[idx].value = VT_TO_VALUE(VT_FALSE);
-        ++idx;
-    }
-    if (om->cap > 0)
-    {
-        Entry *oe = om->entries;
-        idx = 0;
-        while (idx < om->cap)
+        uint32_t idx = 0;
+        while (idx < newCap)
         {
-            if (oe[idx].key.type != VT_UNDEFINED)
-            {
-                addEntry(ne, newCap, oe[idx].key, oe[idx].value);
-            }
+            ne[idx].key = VT_TO_VALUE(VT_UNDEFINED);
+            ne[idx].value = VT_TO_VALUE(VT_FALSE);
             ++idx;
         }
+        if (om->cap > 0)
+        {
+            Entry *oe = om->entries;
+            idx = 0;
+            while (idx < om->cap)
+            {
+                if (oe[idx].key.type != VT_UNDEFINED)
+                {
+                    addEntry(ne, newCap, oe[idx].key, oe[idx].value);
+                }
+                ++idx;
+            }
+        }
+        DEALLOCATE_ARRAY(vm, om->entries, om->cnt);
+        om->entries = ne;
+        om->cap = newCap;
     }
-    DEALLOCATE_ARRAY(vm, om->entries, om->cnt);
-    om->entries = ne;
-    om->cap = newCap;
+    {
+        MEM_ERROR("allocate Entry failed");
+    }
 }
 
 // 在键值对链查找键值对

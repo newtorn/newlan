@@ -47,7 +47,7 @@ typedef struct
 {
     uint8_t *pc;            // 程序指针，指向下一个将被执行的指令
     ObjectClosure *closure; // 执行的闭包函数
-    Value *stackStart;      // 调用帧所在线程运行时栈的起始地址
+    Value *start;           // 调用帧所在线程运行时栈的起始地址
 } Frame;
 
 // 初始调用帧数量
