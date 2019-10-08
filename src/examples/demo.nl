@@ -79,6 +79,6 @@ func sum(a, b) {
 auto t = sum(12, 13)
 System.print(t)
 
-loop i (1...10) {
+loop i (1...123456789123456789123456789123456789123456789) {
     System.print("count %(i) to end.")
 }

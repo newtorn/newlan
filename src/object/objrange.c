@@ -15,7 +15,7 @@ ObjectRange *makeObjectRange(VM *vm, int32_t start, int32_t end)
     }
     else
     {
-        MEM_ERROR("allocate ObjectRange failed")
+        MEM_ERROR("allocate ObjectRange failed");
     }
     return or;
 }

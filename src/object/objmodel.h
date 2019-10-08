@@ -53,6 +53,9 @@ typedef enum
 #define VALUE_IS_MODEL(v) (VALUE_IS_TYPE(v, OT_MODEL))
 #define VALUE_IS_ZERO(v) (VALUE_IS_NUMBER(v) && (v).number == 0)
 
+// 值是否相等函数声明
+bool valueIsEqual(Value a, Value b);
+
 // 定义原生函数指针
 typedef bool (*Primitive)(VM *vm, Value *args);
 
