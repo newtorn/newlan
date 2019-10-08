@@ -31,7 +31,7 @@ bool setHas(ObjectSet *os, Value v)
     Value val = mapGet(os->map, v);
     if (VALUE_IS_UNDEFINED(val))
     {
-        return true;
+        return false;
     }
     return valueIsEqual(val, os->PRESENT);
 }
