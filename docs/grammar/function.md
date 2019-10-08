@@ -19,7 +19,10 @@
   * list支持构造方法创建：list.make
   * 字面量创建：[ "hello", "newlan" ]
   * 支持下标引用（list_identifier[list_index]）：arr[2]
-* 字典
+* 集合
+  * set支持构造方法创建：set.make
+  * 字面量创建：<'a', 'b', 'c'>
+* 哈希表
   * map支持构造方法创建：map.make
   * 字面量创建：{ k1 : v1, k2 : v2 … }
   * 支持下标引用（map_identifier[map_key]）：lans["newlan"]
