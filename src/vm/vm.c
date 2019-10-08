@@ -1,4 +1,5 @@
 #include "vm.h"
+#include "core.h"
 #include "utils.h"
 #include <stdlib.h>
 
@@ -6,6 +7,8 @@ void initVM(VM *vm)
 {
     vm->allBytes = 0;
     vm->allObjects = NULL;
+    StringBufferInit(&(vm->allActionNames));
+    vm->allModules = makeObjectMap(vm);
     vm->curParser = NULL;
 }
 
@@ -17,5 +20,6 @@ VM *makeVM()
         MEM_ERROR("allocate VM failed");
     }
     initVM(vm);
+    buildCore(vm);
     return vm;
 }

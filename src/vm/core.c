@@ -1,11 +1,14 @@
 #include "core.h"
 #include "vm.h"
 #include "utils.h"
+#include "objmodel.h"
 #include <string.h>
 #include <sys/stat.h>
 
 // 根目录
 char *rootDir = NULL;
+
+#define CORE_MODULE VT_TO_VALUE(VT_NONE)
 
 // 读取源文件
 char *readFile(const char *path)
@@ -34,4 +37,18 @@ char *readFile(const char *path)
 
     fclose(fptr);
     return fileData;
+}
+
+// 执行模块代码
+VMResult execModule(VM *vm, Value moduleName, const char *moduleCode)
+{
+    return VMR_ERROR;
+}
+
+// 编译核心模块
+void buildCore(VM *vm)
+{
+    // 核心模块名为空
+    ObjectModule *coreModule = makeObjectModule(vm, NULL);
+    mapSet(vm, vm->allModules, CORE_MODULE, OBJECT_TO_VALUE(coreModule));
 }

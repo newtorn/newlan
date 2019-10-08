@@ -126,6 +126,7 @@ static void mapResize(VM *vm, ObjectMap *om, uint32_t newCap)
         om->entries = ne;
         om->cap = newCap;
     }
+    else
     {
         MEM_ERROR("allocate Entry failed");
     }
