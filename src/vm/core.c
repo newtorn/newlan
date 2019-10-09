@@ -8,9 +8,6 @@
 // 根目录
 char *rootDir = NULL;
 
-// 核心模块名
-#define CORE_MODULE VT_TO_VALUE(VT_NONE)
-
 // 返回值设置并返回
 #define RETURN_VALUE(v) \
     do                  \
@@ -167,9 +164,56 @@ static bool primObjectMetaSame(VM *vm UNUSED, Value *args)
     RETURN_VALUE(blv);
 }
 
-// 执行模块代码
+
+// 根据模块名从模块表中获取模块
+static ObjectModule *getModule(VM *vm, Value moduleName)
+{
+    Value v = mapGetByKey(vm->allModules, moduleName);
+    if (VT_UNDEFINED == v.type)
+    {
+        return NULL;
+    }
+    return VALUE_TO_OBJECT(v);
+}
+
+// 载入模块并编译 返回模块线程
+static ObjectThread *loadModule(VM *vm, Value moduleName, const char *moduleCode)
+{
+    ObjectModule *module = getModule(vm, moduleName);
+
+    if (NULL == module)
+    {
+        // 创建模块并且挂载
+        ObjectString *mn = VALUE_TO_STRING(moduleName);
+        ASSERT('\0' != mn->value.start[mn->value.size], "value of string is unterminated");
+        module = makeObjectModule(vm, mn->value.start);
+        mapSet(vm, vm->allModules, moduleName, OBJECT_TO_VALUE(module));
+
+        // 继承核心模块变量
+        ObjectModule *coreModule = getModule(vm, CORE_MODULE);
+        uint32_t idx = 0;
+        while (idx < coreModule->varNames.cnt)
+        {
+            defineModuleVar(vm, module,
+                            coreModule->varNames.datas[idx].str,
+                            strlen(coreModule->varNames.datas[idx].str),
+                            coreModule->varValues.datas[idx]);
+            ++idx;
+        }
+    }
+
+    // 创建模块线程
+    ObjectFunction *func = compileModule(vm, module, moduleCode);
+    ObjectClosure *oc = makeObjectClosure(vm, func);
+    ObjectThread *ot = makeObjectThread(vm, oc);
+
+    return ot;
+}
+
+// 执行模块
 VMResult execModule(VM *vm, Value moduleName, const char *moduleCode)
 {
+    ObjectThread *ot = loadModule(vm, moduleName, moduleCode);
     return VMR_ERROR;
 }
 

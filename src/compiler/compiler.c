@@ -59,3 +59,9 @@ int32_t defineModuleVar(VM *vm, ObjectModule *om, const char *name, uint32_t siz
         symbolIdx = -1;
     }
 }
+
+// 编译模块 返回模块调用入口
+ObjectFunction *compileModule(VM *vm, ObjectModule *om, const char *moduleCode)
+{
+    return NULL;
+}

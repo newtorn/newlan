@@ -6,11 +6,14 @@
 // 源码文件根目录
 extern char *rootDir;
 
+// 核心模块名
+#define CORE_MODULE VT_TO_VALUE(VT_NONE)
+
 // 源代码读取函数声明
 char *readFile(const char *path);
 
 // 执行模块函数声明
-VMResult execModule(VM* vm, Value moduleName, const char* moduleCode);
+VMResult execModule(VM *vm, Value moduleName, const char *moduleCode);
 
 // 符号所在符号表中的索引查找函数声明
 int32_t indexFromSymbolTable(SymbolTable* st, const char* symbol, uint32_t size);
