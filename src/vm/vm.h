@@ -15,18 +15,18 @@ typedef enum
 // 虚拟机
 struct vm
 {
-    Model *mapModel;            // 哈希表模型链
-    Model *setModel;            // 集合模型链
-    Model *listModel;           // 列表模型链
-    Model *noneModel;           // 空模型链
-    Model *boolModel;           // 布尔模型链
-    Model *rangeModel;          // 范围模型链
-    Model *numberModel;         // 数字模型链
-    Model *stringModel;         // 字符串模型链
-    Model *objectModel;         // 对象模型链
-    Model *threadModel;         // 线程模型链
-    Model *modelOfModel;        // 模型模型链
-    Model *functionModel;       // 函数模型链
+    Model *mapModel;            // 哈希表模型
+    Model *setModel;            // 集合模型
+    Model *listModel;           // 列表模型
+    Model *noneModel;           // 空模型
+    Model *boolModel;           // 布尔模型
+    Model *rangeModel;          // 范围模型
+    Model *numberModel;         // 数字模型
+    Model *stringModel;         // 字符串模型
+    Model *objectModel;         // 对象模型
+    Model *threadModel;         // 线程模型
+    Model *modelOfModel;        // 模型模型
+    Model *functionModel;       // 函数模型
     uint32_t allBytes;          // 总分配空间
     Parser *curParser;          // 当前词法分析器
     ObjectMap *allModules;      // 所有模块
