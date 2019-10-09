@@ -48,3 +48,44 @@ bool valueIsEqual(Value a, Value b)
 
     return false;
 }
+
+// 创建一个原始模型 原始模型没有元模型
+Model* makeRawModel(VM *vm, const char *name, uint32_t attrCnt)
+{
+    Model *model = ALLOCATE(vm, Model);
+    if (NULL != model)
+    {
+        initObjectHeader(vm, &(model->objectHeader), OT_MODEL, NULL);
+        model->name = makeObjectString(vm, name, strlen(name));
+        model->attrCnt = attrCnt;
+        
+        // 默认没有父模型
+        model->superModel = NULL;
+        ActionBufferInit(&(model->actions));
+    }
+    else
+    {
+        MEM_ERROR("allocate Model failed");
+    }
+    return model;
+}
+
+// 获取对象所属的模型
+inline Model* getModelOfObject(VM *vm, Value object)
+{
+    switch (object.type)
+    {
+    case VT_NONE:
+        return vm->noneModel;
+    case VT_TRUE:
+    case VT_FALSE:
+        return vm->boolModel;
+    case VT_NUMBER:
+        return vm->numberModel;
+    case VT_OBJECT:
+        return VALUE_TO_OBJECT(object)->model;
+    default:
+        NOT_REACHED();
+    }
+    return NULL;
+}

@@ -79,7 +79,7 @@ struct model
     struct model *superModel;  // 父模型
     uint32_t attrCnt;          // 属性数，包括父模型
     ActionBuffer actions;      // 模型行为
-    ObjectString name;         // 模型名称
+    ObjectString *name;        // 模型名称
 };
 
 // 存储64位数据结构
