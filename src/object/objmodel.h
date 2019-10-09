@@ -64,8 +64,8 @@ typedef struct
 {
     ActionType type;
     union {
-        Primitive prim;    // 脚本函数关联C实现
-        ObjectClosure *oc; // 指向编译后的ObjectClosure或ObjectFunction
+        Primitive prim;               // 脚本函数关联C实现
+        ObjectClosure *objectClosure; // 指向编译后的ObjectClosure或ObjectFunction
     };
 } Action;
 
@@ -76,15 +76,14 @@ DECLARE_BUFFER_TYPE(Action)
 struct model
 {
     ObjectHeader objectHeader; // 对象头
-    struct model *superModel; // 父模型
-    uint32_t attrNum; // 属性数，包括父模型
-    ActionBuffer actions; // 模型行为
-    ObjectString name; // 模型名称
+    struct model *superModel;  // 父模型
+    uint32_t attrCnt;          // 属性数，包括父模型
+    ActionBuffer actions;      // 模型行为
+    ObjectString name;         // 模型名称
 };
 
 // 存储64位数据结构
-typedef union
-{
+typedef union {
     uint64_t bits64;
     uint32_t bits32[2];
     double number;

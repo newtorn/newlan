@@ -14,7 +14,7 @@ ObjectFunction *makeObjectFunction(VM *vm, ObjectModule *om, uint32_t maxStackSl
         ValueBufferInit(&(of->constants));
         of->module = om;
         of->maxStackSlot = maxStackSlot;
-        of->upvalueNum = of->argNum = 0;
+        of->upvalueCnt = of->argc = 0;
         #ifdef DEBUG
         of->debug = ALLOCATE(vm, FunctionDebug);
         of->debug->funcName = NULL;
@@ -31,13 +31,13 @@ ObjectFunction *makeObjectFunction(VM *vm, ObjectModule *om, uint32_t maxStackSl
 // 创建闭包对象
 ObjectClosure *makeObjectClosure(VM *vm, ObjectFunction *of)
 {
-    ObjectClosure *oc = ALLOCATE_FLEX(vm, ObjectClosure, sizeof(ObjectUpvalue) * (of->argNum));
+    ObjectClosure *oc = ALLOCATE_FLEX(vm, ObjectClosure, sizeof(ObjectUpvalue) * (of->argc));
     if (NULL != oc)
     {
         initObjectHeader(vm, &(oc->objectHeader), OT_CLOSURE, vm->functionModel);
         oc->func = of;
         uint32_t idx = 0;
-        while (idx < of->upvalueNum)
+        while (idx < of->upvalueCnt)
         {
             oc->upvalues[idx++] = NULL;
         }

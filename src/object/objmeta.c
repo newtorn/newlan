@@ -31,12 +31,12 @@ ObjectModule *makeObjectModule(VM *vm, const char *name)
 // 创建模型实例
 ObjectInstance *makeObjectInstance(VM *vm, Model *model)
 {
-    ObjectInstance *oi = ALLOCATE_FLEX(vm, ObjectInstance, sizeof(Value) * (model->attrNum));
+    ObjectInstance *oi = ALLOCATE_FLEX(vm, ObjectInstance, sizeof(Value) * (model->attrCnt));
     if (NULL != oi)
     {
         initObjectHeader(vm, &(oi->objectHeader), OT_INSTANCE, model);
         uint32_t idx = 0;
-        while (idx < model->attrNum)
+        while (idx < model->attrCnt)
         {
             oi->attrs[idx++] = VT_TO_VALUE(VT_NONE);
         }
