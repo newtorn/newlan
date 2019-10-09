@@ -131,7 +131,7 @@ static bool primObjectToString(VM *vm UNUSED, Value *args)
 }
 
 // args[0].type：返回对象args[0]的模型
-static bool primModelType(VM *vm, Value *args)
+static bool primObjectType(VM *vm, Value *args)
 {
     Model *model = getModelOfObject(vm, args[0]);
     RETURN_OBJECT(model);
@@ -242,7 +242,47 @@ void bindSuperModel(VM *vm, Model *subModel, Model *superModel)
 // 编译核心模块
 void buildCore(VM *vm)
 {
-    // 核心模块名为空
+    // 创建核心模块 载入核心模块 名为空
     ObjectModule *coreModule = makeObjectModule(vm, NULL);
     mapSet(vm, vm->allModules, CORE_MODULE, OBJECT_TO_VALUE(coreModule));
+
+    // Model: ojbect
+    // 创建对象模型并绑定行为
+    // 它是所有模型实例的超模型(对象模型)
+    // 超模型是实例的父模型链的终结节点
+    // 当一个模型未显式指定父模型，那超模型就是对象模型
+    vm->objectModel = defineModel(vm, coreModule, "object");
+    PRIM_FUNC_BIND(vm->objectModel, "!", primObjectNot);
+    PRIM_FUNC_BIND(vm->objectModel, "==(_)", primObjectEqual);
+    PRIM_FUNC_BIND(vm->objectModel, "!=(_)", primObjectNotEqual);
+    PRIM_FUNC_BIND(vm->objectModel, "is(_)", primObjectIs);
+    PRIM_FUNC_BIND(vm->objectModel, "toString", primObjectToString);
+    PRIM_FUNC_BIND(vm->objectModel, "type", primObjectType);
+
+    // Model: model
+    // 创建modelOfModel
+    // 它是所有元信息模型的元信息模型以及元信息模型的父模型
+    vm->modelOfModel = defineModel(vm, coreModule, "model");
+
+    // object模型是任何模型的父模型
+    bindSuperModel(vm, vm->modelOfModel, vm->objectModel);
+    PRIM_FUNC_BIND(vm->modelOfModel, "name", primModelName);
+    PRIM_FUNC_BIND(vm->modelOfModel, "superType", primModelSuperType);
+    PRIM_FUNC_BIND(vm->modelOfModel, "toString", primModelToString);
+
+    // Model: meta
+    // 对用户不可见
+    // 创建object模型的元信息模型
+    vm->metaModel = defineModel(vm, coreModule, "objectMeta");
+
+    // 它是所有元信息模型的元信息模型以及元信息模型的父模型
+    bindSuperModel(vm, vm->metaModel, vm->modelOfModel);
+
+    // 类型比较绑定
+    PRIM_FUNC_BIND(vm->metaModel, "same(_,_)", primObjectMetaSame);
+
+    // 绑定元信息模型  元信息模型需要闭合闭合
+    vm->objectModel->objectHeader.model = vm->metaModel;
+    vm->metaModel->objectHeader.model = vm->modelOfModel;
+    vm->modelOfModel->objectHeader.model = vm->modelOfModel;
 }

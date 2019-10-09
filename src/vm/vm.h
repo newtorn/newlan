@@ -17,8 +17,9 @@ struct vm
 {
     Model *mapModel;            // 哈希表模型
     Model *setModel;            // 集合模型
-    Model *listModel;           // 列表模型
     Model *noneModel;           // 空模型
+    Model *metaModel;           // 元模型
+    Model *listModel;           // 列表模型
     Model *boolModel;           // 布尔模型
     Model *rangeModel;          // 范围模型
     Model *numberModel;         // 数字模型
