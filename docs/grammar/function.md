@@ -64,7 +64,7 @@
 * 模型行为
   * 支持块带参数，类似ruby中的实现：{ <paramList> … }
   * 包括实例动作：actionName(paramList) {...}
-  * 下标访问：subscript
+  * 下标访问：subscriptGetter
   * 下标设置：subscriptSetter
   * 属性设置获取：setter、getter
   * 支持静态行为：static actionName { … }
