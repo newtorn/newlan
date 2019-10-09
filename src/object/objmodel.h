@@ -53,9 +53,6 @@ typedef enum
 #define VALUE_IS_MODEL(v) (VALUE_IS_TYPE(v, OT_MODEL))
 #define VALUE_IS_ZERO(v) (VALUE_IS_NUMBER(v) && (v).number == 0)
 
-// 值是否相等函数声明
-bool valueIsEqual(Value a, Value b);
-
 // 定义原生函数指针
 typedef bool (*Primitive)(VM *vm, Value *args);
 
@@ -94,5 +91,14 @@ typedef union {
 
 // 最小容量
 #define MIN_CAP 64
+
+// 值是否相等函数声明
+bool valueIsEqual(Value a, Value b);
+
+// 创建一个原始模型函数声明
+Model* makeRawModel(VM *vm, const char *name, uint32_t attrCnt);
+
+// 获取对象所属的模型函数声明
+inline Model* getModelOfObject(VM *vm, Value object);
 
 #endif
