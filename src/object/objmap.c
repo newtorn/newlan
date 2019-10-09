@@ -35,7 +35,7 @@ static uint32_t hashObject(ObjectHeader *oh)
     switch (oh->type)
     {
     case OT_MODEL:
-        return hashString(((Model *)oh)->name.value.start, ((Model *)oh)->name.value.size);
+        return hashString(((Model *)oh)->name->value.start, ((Model *)oh)->name->value.size);
 
     case OT_RANGE:
         return hashNumber(((ObjectRange *)oh)->start) ^ hashNumber(((ObjectRange *)oh)->end);

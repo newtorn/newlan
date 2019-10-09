@@ -42,7 +42,7 @@ int32_t defineModuleVar(VM *vm, ObjectModule *om, const char *name, uint32_t siz
     {
         // 添加变量名和变量值 原子操作 保持索引一致性
         symbolIdx = addSymbol(vm, &(om->varNames), name, size);
-        ValueBufferPut(vm, &(om->varValue), v);
+        ValueBufferPut(vm, &(om->varValues), v);
     }
     else if (VALUE_IS_NUMBER(om->varValues.datas[symbolIdx]))
     {
@@ -51,7 +51,7 @@ int32_t defineModuleVar(VM *vm, ObjectModule *om, const char *name, uint32_t siz
         // 此时的值并不代表变量的值，只是供语法分析使用
         // 变量赋值是在运行阶段完成的，此时是在语法分析
         // 所以可以用这种隐式方法作为模块变量的预先声明
-        om->varValues.datas[idx] = v;
+        om->varValues.datas[symbolIdx] = v;
     }
     else
     {

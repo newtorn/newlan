@@ -1,7 +1,6 @@
 #include "core.h"
 #include "vm.h"
 #include "utils.h"
-#include "objmodel.h"
 #include "compiler.h"
 #include <string.h>
 #include <sys/stat.h>
@@ -197,6 +196,10 @@ int32_t addSymbol(VM *vm, SymbolTable *st, const char *symbol, uint32_t size)
     ASSERT(0 != size, "length of symbol is 0");
     String s;
     s.str = ALLOCATE_ARRAY(vm, char, size + 1);
+    if (NULL == s.str)
+    {
+        MEM_ERROR("allocate char array failed");
+    }
     memcpy(s.str, symbol, size);
     s.str[size] = '\0';
     s.size = size;
@@ -210,6 +213,30 @@ static Model* defineModel(VM *vm, ObjectModule *om, const char *name)
     Model *model = makeRawModel(vm, name, 0);
     defineModuleVar(vm, om, name, strlen(name), OBJECT_TO_VALUE(model));
     return model;
+}
+
+// 绑定行为
+void  bindAction(VM *vm, Model *model, uint32_t idx, Action action)
+{
+    if (idx >= model->actions.cnt)
+    {
+        Action pad = {AT_NONE, {0}};
+        ActionBufferFill(vm, &(model->actions), pad, idx-model->actions.cnt+1);
+    }
+    model->actions.datas[idx] = action;
+}
+
+// 绑定父模型
+void bindSuperModel(VM *vm, Model *subModel, Model *superModel)
+{
+    subModel->superModel = superModel;
+    subModel->attrCnt += superModel->attrCnt;
+    uint32_t idx = 0;
+    while (idx < superModel->actions.cnt)
+    {
+        bindAction(vm, subModel, idx, superModel->actions.datas[idx]);
+        ++idx;
+    }
 }
 
 // 编译核心模块

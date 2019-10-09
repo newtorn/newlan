@@ -1,6 +1,7 @@
 #ifndef _VM_CORE_H
 #define _VM_CORE_H
 #include "vm.h"
+#include "objmodel.h"
 
 // 源码文件根目录
 extern char *rootDir;
