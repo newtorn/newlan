@@ -3,6 +3,7 @@
 #include "common.h"
 #include "vm.h"
 #include "objmodel.h"
+#include "compiler.h"
 
 // 标记类型
 typedef enum
@@ -100,13 +101,14 @@ typedef struct
 // 词法分析器结构
 struct parser
 {
-    const char *file;        // 源码文件名
-    const char *source;      // 源码串地址
-    const char *nextChar;    // 下一个字符在源码串中的地址
-    char curChar;            // 当前字符
-    Token curToken;          // 当前标记
-    Token preToken;          // 前一个标记
-    ObjectModule *curModule; // 词法分析器所在的模块
+    const char *file;            // 源码文件名
+    const char *source;          // 源码串地址
+    const char *nextChar;        // 下一个字符在源码串中的地址
+    char curChar;                // 当前字符
+    Token curToken;              // 当前标记
+    Token preToken;              // 前一个标记
+    ObjectModule *curModule;     // 词法分析器所在的模块
+    CompileUnit *curCompileUnit; // 当前编译单元
 
     // Interpolation expression expect right parenthese number
     int rightParenNumofIE; // 内嵌表达式期望的右括号数量
