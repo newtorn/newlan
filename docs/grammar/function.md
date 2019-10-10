@@ -62,12 +62,13 @@
 * 支持模型包含，使用inc关键字，类似于传统意义的继承，所有模型都是object的子模型
 * 模型属性：必须先声明后使用
 * 模型行为
-  * 支持块带参数，类似ruby中的实现：{ <paramList> … }
+  * 支持块带参数，类似ruby中的实现：{ [paramList] … }
   * 包括实例动作：actionName(paramList) {...}
   * 下标访问：subscriptGetter
   * 下标设置：subscriptSetter
   * 属性设置获取：setter、getter
   * 支持静态行为：static actionName { … }
+
 
 ## 线程
 
