@@ -9,7 +9,7 @@
 // 编译单元
 struct compileUnit
 {
-    ObjectFunction func;                   // 编译的函数
+    ObjectFunction *func;                  // 编译的函数
     LocalVar localVars[MAX_LOCAL_VAR_NUM]; // 局部变量表
     uint32_t localVarCnt;                  // 已分配的局部变量
     Upvalue upvalues[MAX_UPVALUE_NUM];     // 当前函数引用的上值
@@ -20,6 +20,104 @@ struct compileUnit
     struct compileUnit *enclosedUnit;      // 包含当前编译单元的直接外层编译单元
     Parser *curParser;                     // 当前词法分析器
 };
+
+#define OPCODE_SLOTS(opCode, effect) effect,
+static const int32_t opCodeSlotsUsed[] = {
+#include "opcode.inc"
+};
+#undef OPCODE_SLOTS
+
+// 初始化编译单元
+static void initCompileUnit(Parser *parser, CompileUnit *cu, CompileUnit *enclosedUnit, bool isAction)
+{
+    parser->curCompileUnit = cu;
+    cu->curParser = parser;
+    cu->enclosedUnit = enclosedUnit;
+    cu->curLoop = NULL;
+    cu->enclosedModelBook = NULL;
+    if (NULL == enclosedUnit)
+    {
+        // 如果没有外层，则属于模块作用域
+        cu->scopeDepth = -1;
+        cu->localVarCnt = 0;
+    }
+    else
+    {
+        // 如果是内层，则属于局部作用域
+        if (isAction)
+        {
+            // 若为模型中的行为 设定this为第0个变量
+            // this即实例对象 它是行为的消息接收者
+            cu->localVars[0].name = "this";
+            cu->localVars[0].size = 4;
+        }
+        else
+        {
+            // 若为普通函数 空出第0个变量 保持统一
+            cu->localVars[0].name = NULL;
+            cu->localVars[0].size = 0;
+        }
+        // 第0个变量特殊照顾 将其设为模块作用域级别
+        cu->localVars[0].scopeDepth = -1;
+        cu->localVars[0].isUpvalue = false;
+        cu->localVarCnt = 1;
+
+        // 对于普通函数和模块行为 初始作用域为局部作用域
+        // 0 为局部作用域的最外层作用域
+        cu->scopeDepth = 0;
+    }
+    // 局部变量在栈中 栈已用数量等于局部变量数
+    cu->stackSlotCnt = cu->localVarCnt;
+    cu->func = makeObjectFunction(cu->curParser->vm, cu->curParser->curModule, cu->localVarCnt);
+}
+
+// 向指令流中写入1字节 并返回写入的索引
+static int32_t writeByte(CompileUnit *cu, int32_t byte)
+{
+#if DEBUG
+    IntBufferPut(cu->curParser->vm, &(cu->func->debug->lineNum), cu->curParser->preToken.lineNum);
+#endif
+    ByteBufferPut(cu->curParser->vm, &(cu->func->instrStream), (uint8_t)byte);
+    return cu->func->instrStream.cnt - 1;
+}
+
+// 写入操作码
+static void writeOpCode(CompileUnit *cu, OpCode opCode)
+{
+    writeByte(cu, opCode);
+    cu->stackSlotCnt += opCodeSlotsUsed[opCode];
+    if (cu->stackSlotCnt > cu->func->maxStackSlot)
+    {
+        cu->func->maxStackSlot = cu->stackSlotCnt;
+    }
+}
+
+// 写入一个字节的操作数 返回写入的索引
+static int32_t writeByteOperand(CompileUnit *cu, int32_t operand)
+{
+    return writeByte(cu, operand);
+}
+
+// 写入2字节操作数 大端序写入 返回写入的低字节索引
+inline static int32_t writeShortOperand(CompileUnit *cu, int32_t operand)
+{
+    writeByte(cu, (operand >> 8) & 0xff); // 先写高8位
+    return writeByte(cu, operand & 0xff); // 再写低8位
+}
+
+// 写入操作数为1字节大小的指令
+static int32_t writeOpCodeByteOperand(CompileUnit *cu, OpCode opCode, int32_t operand)
+{
+    writeOpCode(cu, opCode);
+    return writeByteOperand(cu, operand);
+}
+
+// 写入操作数为2字节大小的指令
+static int32_t writeOpCodeShortOperand(CompileUnit *cu, OpCode opCode, int32_t operand)
+{
+    writeOpCode(cu, opCode);
+    return writeShortOperand(cu, operand);
+}
 
 // 定义模块变量 重定义返回 -1
 int32_t defineModuleVar(VM *vm, ObjectModule *om, const char *name, uint32_t size, Value v)

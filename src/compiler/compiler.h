@@ -36,6 +36,7 @@ typedef struct
     const char *name;   // 变量名
     uint32_t size;      // 变量名长度
     int32_t scopeDepth; // 变量作用域
+    bool isUpvalue;     // 是否是上值
 } LocalVar;
 
 // 签名类型
