@@ -5,6 +5,16 @@
 #include "objmap.h"
 #include "objthread.h"
 
+// 为opcode.inc中的操作码添加opcode前缀OC_
+#define OPCODE_SLOTS(opcode, effect) OC_##opcode,
+
+// 操作码
+typedef enum
+{
+    OC_UNKNOWN,       // 未知opcode
+#include "opcode.inc" // 展开opcode
+} OpCode;
+
 // 虚拟机执行结果
 typedef enum
 {
