@@ -5,8 +5,8 @@
 #include "objmap.h"
 #include "objthread.h"
 
-// 为opcode.inc中的操作码添加opcode前缀OC_
-#define OPCODE_SLOTS(opcode, effect) OC_##opcode,
+// 为opcode.inc中的操作码添加opCode前缀OC_
+#define OPCODE_SLOTS(opCode, effect) OC_##opCode,
 
 // 操作码
 typedef enum
