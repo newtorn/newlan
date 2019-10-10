@@ -21,7 +21,7 @@ typedef struct
     uint32_t upvalueCnt;       // 上值数量
     uint8_t argc;              // 期望参数个数
 #if DEBUG
-    FunctionDebug debug;
+    FunctionDebug *debug;
 #endif
 } ObjectFunction;
 
