@@ -52,7 +52,7 @@ char *rootDir = NULL;
 char *readFile(const char *path)
 {
     FILE *fptr = fopen(path, "r");
-    if (fptr == fptr)
+    if (fptr == NULL)
     {
         IO_ERROR("could not open file \"%s\".", path);
     }
