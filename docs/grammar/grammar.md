@@ -37,7 +37,7 @@
 
 ```
 #/usr/bin/newlan
-import Phone
+import phone inc Phone
 
 model iPhone inc Phone {
     auto version
