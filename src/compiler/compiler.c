@@ -158,8 +158,39 @@ int32_t defineModuleVar(VM *vm, ObjectModule *om, const char *name, uint32_t siz
     }
 }
 
+// 编译程序
+static void compileProgram(CompileUnit *cu)
+{
+    ;
+}
+
 // 编译模块 返回模块调用入口
 ObjectFunction *compileModule(VM *vm, ObjectModule *om, const char *moduleCode)
 {
+    Parser parser;
+    parser.parent = vm->curParser;
+    vm->curParser = &parser;
+
+    if (om->name == CORE_MODULE_STR_NAME)
+    {
+        initParser(vm, &parser, CORE_MODULE_CODE_PATH, moduleCode, om);
+    }
+    else
+    {
+        initParser(vm, &parser, (const char *)(om->name->value.start), moduleCode, om);
+    }
+    
+    CompileUnit mcu;
+    initCompileUnit(&parser, &mcu, NULL, false);
+
+    uint32_t moduleVarCntBefore = om->varValues.cnt;
+
+    getNextToken(&parser);
+
+    while (!matchToken(&parser, TOKEN_EOF))
+    {
+        compileProgram(&mcu);
+    }
+
     return NULL;
 }

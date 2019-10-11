@@ -6,8 +6,10 @@
 // 源码文件根目录
 extern char *rootDir;
 
-// 核心模块名
-#define CORE_MODULE VT_TO_VALUE(VT_NONE)
+// 核心模块
+#define CORE_MODULE_VAL_NAME VT_TO_VALUE(VT_NONE)
+#define CORE_MODULE_STR_NAME NULL
+#define CORE_MODULE_CODE_PATH "core.inc"
 
 // 源代码读取函数声明
 char *readFile(const char *path);

@@ -1,4 +1,5 @@
 #include "core.h"
+#include "core.inc"
 #include "vm.h"
 #include "utils.h"
 #include "compiler.h"
@@ -190,7 +191,7 @@ static ObjectThread *loadModule(VM *vm, Value moduleName, const char *moduleCode
         mapSet(vm, vm->allModules, moduleName, OBJECT_TO_VALUE(module));
 
         // 继承核心模块变量
-        ObjectModule *coreModule = getModule(vm, CORE_MODULE);
+        ObjectModule *coreModule = getModule(vm, CORE_MODULE_VAL_NAME);
         uint32_t idx = 0;
         while (idx < coreModule->varNames.cnt)
         {
@@ -288,7 +289,7 @@ void buildCore(VM *vm)
 {
     // 创建核心模块 载入核心模块 名为空
     ObjectModule *coreModule = makeObjectModule(vm, NULL);
-    mapSet(vm, vm->allModules, CORE_MODULE, OBJECT_TO_VALUE(coreModule));
+    mapSet(vm, vm->allModules, CORE_MODULE_VAL_NAME, OBJECT_TO_VALUE(coreModule));
 
     // Model: ojbect
     // 创建对象模型并绑定行为
@@ -329,4 +330,7 @@ void buildCore(VM *vm)
     vm->objectModel->objectHeader.model = vm->metaModel;
     vm->metaModel->objectHeader.model = vm->modelOfModel;
     vm->modelOfModel->objectHeader.model = vm->modelOfModel;
+
+    // 执行核心模块
+    execModule(vm, CORE_MODULE_VAL_NAME, coreModuleCode);
 }

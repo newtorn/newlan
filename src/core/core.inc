@@ -206,7 +206,7 @@ static const char *coreModuleCode =
 "       loop elem (other) res.add(elem)\n"
 "       return res\n"
 "   }\n"
-'\n'
+"\n"
 "   *(count) {\n"
 "       if (!(count is num) || !count.isInteger || count < 0)\n"
 "           Thread.abort(\"count must be a non-negative interger.\")\n"
