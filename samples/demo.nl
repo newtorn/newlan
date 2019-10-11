@@ -25,18 +25,18 @@ model iPhone inc Phone {
     }
 
     showInfo() {
-        System.print("iPhone's version: %(version), battery: %(battery), size: %(size)")
+        Console.log("iPhone's version: %(version), battery: %(battery), size: %(size)")
     }
 
     static pNum() {
-        System.print(pNum)
+        Console.log(pNum)
     }
 }
 
 // I want to create a iPhone which extends Phone
 auto p = iPhone.make("1.0.0", 87, [320, 680])
 p.showInfo()
-System.print(p.size)
+Console.log(p.size)
 p.version = "2.0.1"
 p.showInfo()
 iPhone.pNum()
@@ -48,25 +48,25 @@ auto ls = list.make()
 auto mp = map.make()
 auto ls1 = ["1", "2"]
 auto mp1 = {"xm": 27, "zs": 20}
-System.print(ls1[0])
-System.print(mp1["zs"])
+Console.log(ls1[0])
+Console.log(mp1["zs"])
 
-System.print("1" in ls1 ? "exist element!" : "not exist")
-System.print("sm" in mp1 ? "exist key!" : "not exist")
+Console.log("1" in ls1 ? "exist element!" : "not exist")
+Console.log("sm" in mp1 ? "exist key!" : "not exist")
 
 loop i (ls1) {
-    System.print(i)
+    Console.log(i)
 }
 
 loop i (mp1) {
-    System.print(mp1[i])
+    Console.log(mp1[i])
 }
 
 if (ls is none) {
-    System.print(true)
+    Console.log(true)
 }
 else {
-    System.print(false)
+    Console.log(false)
 }
 
 auto i = int("123")
@@ -80,8 +80,8 @@ func sum(a, b) {
 }
 
 auto t = sum(12, 13)
-System.print(t)
+Console.log(t)
 
 loop i (1...123456789123456789123456789123456789123456789) {
-    System.print("count %(i) to end.")
+    Console.log("count %(i) to end.")
 }
