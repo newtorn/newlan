@@ -6,6 +6,8 @@ CFLAGS = -g -lm -Wall -I cli  -I include -I parser -I vm -I object -I core -I co
 
 TARGET = newlan
 
+OUTPUT = ../bin
+
 DIRS = cli include parser vm object core compiler gc
 
 CFILES = $(foreach dir, $(DIRS), $(wildcard $(dir)/*.c))
@@ -17,5 +19,10 @@ $(TARGET) : $(OBJS)
 
 clean :
 	-$(RM) $(TARGET) $(OBJS)
+
+install:
+	mkdir -p $(OUTPUT)
+	cp $(TARGET) $(OUTPUT)/$(TARGET)
 	
-rebuild: clean $(TARGET)
+rebuild:
+	clean $(TARGET)

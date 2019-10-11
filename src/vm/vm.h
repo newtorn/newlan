@@ -7,13 +7,13 @@
 
 // 为opcode.inc中的操作码添加opCode前缀OC_
 #define OPCODE_SLOTS(opCode, effect) OC_##opCode,
-
 // 操作码
 typedef enum
 {
     OC_UNKNOWN,       // 未知opcode
 #include "opcode.inc" // 展开opcode
 } OpCode;
+#undef OPCODE_SLOTS
 
 // 虚拟机执行结果
 typedef enum
