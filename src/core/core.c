@@ -38,7 +38,7 @@ char *rootDir = NULL;
     {                                                                                      \
         uint32_t size = strlen(actionName);                                                \
         int32_t globalIdx = indexFromSymbolTable(&(vm->allActionNames), actionName, size); \
-        if (-1 == globalIdx)                                                               \
+        if (globalIdx == -1)                                                               \
         {                                                                                  \
             globalIdx = addSymbol(vm, &(vm->allActionNames), actionName, size);            \
         }                                                                                  \
@@ -52,7 +52,7 @@ char *rootDir = NULL;
 char *readFile(const char *path)
 {
     FILE *fptr = fopen(path, "r");
-    if (NULL == fptr)
+    if (fptr == fptr)
     {
         IO_ERROR("could not open file \"%s\".", path);
     }
@@ -61,7 +61,7 @@ char *readFile(const char *path)
     stat(path, &fileStat);
     size_t fileSize = fileStat.st_size;
     char *fileData = (char *)malloc(fileSize + 1);
-    if (NULL == fileData)
+    if (fileData == NULL)
     {
         MEM_ERROR("could not allocate memory for reading file \"%s\"", path);
     }
@@ -108,7 +108,7 @@ static bool primObjectIs(VM *vm, Value *args)
 
     Model *thisModel = getModelOfObject(vm, args[0]);
     Model *baseModel = (Model *)(args[1].objectHeader);
-    while (NULL != baseModel)
+    while (baseModel != NULL)
     {
         if (thisModel == baseModel)
         {
@@ -144,7 +144,7 @@ static bool primModelName(VM *vm UNUSED, Value *args)
 static bool primModelSuperType(VM *vm UNUSED, Value *args)
 {
     Model *model = VALUE_TO_MODEL(args[0]);
-    if (NULL != model->superModel)
+    if (model->superModel != NULL)
     {
         RETURN_OBJECT(model->superModel);
     }
@@ -169,7 +169,7 @@ static bool primObjectMetaSame(VM *vm UNUSED, Value *args)
 static ObjectModule *getModule(VM *vm, Value moduleName)
 {
     Value v = mapGetByKey(vm->allModules, moduleName);
-    if (VT_UNDEFINED == v.type)
+    if (v.type == VT_UNDEFINED)
     {
         return NULL;
     }
@@ -181,7 +181,7 @@ static ObjectThread *loadModule(VM *vm, Value moduleName, const char *moduleCode
 {
     ObjectModule *module = getModule(vm, moduleName);
 
-    if (NULL == module)
+    if (module == NULL)
     {
         // 创建模块并且挂载
         ObjectString *mn = VALUE_TO_STRING(moduleName);
@@ -224,8 +224,8 @@ int32_t indexFromSymbolTable(SymbolTable *st, const char *symbol, uint32_t size)
     uint32_t idx = 0;
     while (idx < st->cnt)
     {
-        if (size == st->datas[idx].size &&
-            0 == memcmp(st->datas[idx].str, symbol, size))
+        if (st->datas[idx].size == size &&
+            memcmp(st->datas[idx].str, symbol, size) == 0)
         {
             return idx;
         }
@@ -237,10 +237,10 @@ int32_t indexFromSymbolTable(SymbolTable *st, const char *symbol, uint32_t size)
 // 返回符号添加在符号表中的索引
 int32_t addSymbol(VM *vm, SymbolTable *st, const char *symbol, uint32_t size)
 {
-    ASSERT(0 != size, "length of symbol is 0");
+    ASSERT(size != 0, "length of symbol is 0");
     String s;
     s.str = ALLOCATE_ARRAY(vm, char, size + 1);
-    if (NULL == s.str)
+    if (s.str == NULL)
     {
         MEM_ERROR("allocate char array failed");
     }

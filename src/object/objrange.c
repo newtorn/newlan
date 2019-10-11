@@ -7,7 +7,7 @@
 ObjectRange *makeObjectRange(VM *vm, int32_t start, int32_t end)
 {
     ObjectRange *or = ALLOCATE(vm, ObjectRange);
-    if (NULL != or)
+    if (or != NULL)
     {
         initObjectHeader(vm, &(or->objectHeader), OT_RANGE, vm->rangeModel);
         or->start = start;

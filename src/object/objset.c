@@ -6,7 +6,7 @@ ObjectSet *makeObjectSet(VM *vm)
 {
     ObjectSet *os = ALLOCATE(vm, ObjectSet);
     ObjectMap *map = makeObjectMap(vm);
-    if (NULL != os)
+    if (os != NULL)
     {
         initObjectHeader(vm, &(os->objectHeader), OT_SET, vm->setModel);
         initObjectHeader(vm, os->PRESENT.objectHeader, OT_MODEL, vm->objectModel);

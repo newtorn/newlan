@@ -35,7 +35,7 @@ static void initCompileUnit(Parser *parser, CompileUnit *cu, CompileUnit *enclos
     cu->enclosedUnit = enclosedUnit;
     cu->curLoop = NULL;
     cu->enclosedModelBook = NULL;
-    if (NULL == enclosedUnit)
+    if (enclosedUnit == NULL)
     {
         // 如果没有外层，则属于模块作用域
         cu->scopeDepth = -1;
@@ -126,7 +126,7 @@ int32_t defineModuleVar(VM *vm, ObjectModule *om, const char *name, uint32_t siz
     {
         char id[MAX_ID_LEN] = {'\0'};
         memcpy(id, name, size);
-        if (NULL != vm->curParser)
+        if (vm->curParser != NULL)
         {
             COMPILE_ERROR(vm->curParser, "identifier \"%s>\" is out of max length<%d>", id, MAX_ID_LEN);
         }
@@ -136,7 +136,7 @@ int32_t defineModuleVar(VM *vm, ObjectModule *om, const char *name, uint32_t siz
         }
     }
     int32_t symbolIdx = indexFromSymbolTable(&(om->varNames), name, size);
-    if (-1 == symbolIdx)
+    if (symbolIdx == -1)
     {
         // 添加变量名和变量值 原子操作 保持索引一致性
         symbolIdx = addSymbol(vm, &(om->varNames), name, size);

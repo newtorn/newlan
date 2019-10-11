@@ -8,7 +8,7 @@
 ObjectModule *makeObjectModule(VM *vm, const char *name)
 {
     ObjectModule *om = ALLOCATE(vm, ObjectModule);
-    if (NULL != om)
+    if (om != NULL)
     {
         initObjectHeader(vm, &(om->objectHeader), OT_MODULE, NULL);
 
@@ -16,7 +16,7 @@ ObjectModule *makeObjectModule(VM *vm, const char *name)
         ValueBufferInit(&(om->varValues));
 
         om->name = NULL; // 核心模块名为空
-        if (NULL != name)
+        if (name != NULL)
         {
             om->name = makeObjectString(vm, name, strlen(name));
         }
@@ -32,7 +32,7 @@ ObjectModule *makeObjectModule(VM *vm, const char *name)
 ObjectInstance *makeObjectInstance(VM *vm, Model *model)
 {
     ObjectInstance *oi = ALLOCATE_FLEX(vm, ObjectInstance, sizeof(Value) * (model->attrCnt));
-    if (NULL != oi)
+    if (oi != NULL)
     {
         initObjectHeader(vm, &(oi->objectHeader), OT_INSTANCE, model);
         uint32_t idx = 0;

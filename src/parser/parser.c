@@ -42,10 +42,10 @@ struct keywordToken keywords[] = {
 static TokenType typeFromWord(const char *start, uint32_t size)
 {
     uint32_t idx = 0;
-    while (NULL != keywords[idx].keyword)
+    while (keywords[idx].keyword != NULL)
     {
-        if ((size == keywords[idx].size) &&
-            (0 == memcmp(keywords[idx].keyword, start, size)))
+        if ((keywords[idx].size) == size &&
+            (memcmp(keywords[idx].keyword, start, size) == 0))
         {
             return keywords[idx].token;
         }
@@ -84,7 +84,7 @@ static void skipBlanks(Parser *parser)
 {
     while (isspace(parser->curChar))
     {
-        if ('\n' == parser->curChar)
+        if (parser->curChar == '\n')
         {
             parser->curToken.lineNum++;
         }
@@ -96,9 +96,9 @@ static void skipBlanks(Parser *parser)
 static void skipLine(Parser *parser)
 {
     getNextChar(parser);
-    while ('\0' != parser->curChar)
+    while (parser->curChar != '\0')
     {
-        if ('\n' == parser->curChar)
+        if (parser->curChar == '\n')
         {
             parser->curToken.lineNum++;
             getNextChar(parser);
@@ -112,16 +112,16 @@ static void skipLine(Parser *parser)
 static void skipComment(Parser *parser)
 {
     char nextChar = lookAheadChar(parser);
-    if ('/' == parser->curChar)
+    if (parser->curChar == '/')
     {
         skipLine(parser);
     }
     else
     {
-        while ('*' != nextChar && '\0' != nextChar)
+        while (nextChar != '*' && nextChar != '\0')
         {
             getNextChar(parser);
-            if ('\n' == parser->curChar)
+            if (parser->curChar  != '\n')
             {
                 parser->curToken.lineNum++;
             }
@@ -146,7 +146,7 @@ static void skipComment(Parser *parser)
 // 解析标识符
 static void parseId(Parser *parser, TokenType type)
 {
-    while (isalnum(parser->curChar) || '_' == parser->curChar)
+    while (isalnum(parser->curChar) || parser->curChar == '_')
     {
         getNextChar(parser);
     }
@@ -175,7 +175,7 @@ static void parseUnicodeCodePoint(Parser *parser, ByteBuffer *buf)
     while (idx++ < 4)
     {
         getNextChar(parser);
-        if ('\0' == parser->curChar)
+        if (parser->curChar == '\0')
         {
             LEX_ERROR(parser, "unterminated unicode");
         }
@@ -214,18 +214,18 @@ static void parseString(Parser *parser)
     {
         getNextChar(parser);
 
-        if ('\0' == parser->curChar)
+        if (parser->curChar == '\0')
         {
             LEX_ERROR(parser, "unterminated string");
         }
 
-        if ('"' == parser->curChar)
+        if (parser->curChar == '"')
         {
             parser->curToken.type = TOKEN_STRING;
             break;
         }
 
-        if ('%' == parser->curChar)
+        if (parser->curChar == '%')
         {
             if (!matchNextChar(parser, '('))
             {
@@ -240,7 +240,7 @@ static void parseString(Parser *parser)
             break;
         }
 
-        if ('\\' == parser->curChar)
+        if (parser->curChar == '\\')
         {
             getNextChar(parser);
             switch (parser->curChar)
@@ -306,7 +306,7 @@ static void parseDecNumber(Parser *parser)
     {
         getNextChar(parser);
     }
-    if ('.' == parser->curChar && isdigit(lookAheadChar(parser)))
+    if (parser->curChar == '.' && isdigit(lookAheadChar(parser)))
     {
         getNextChar(parser);
         while (isdigit(parser->curChar))
@@ -328,7 +328,7 @@ static void parseOctNumber(Parser *parser)
 // 解析二进制数字
 static void parseBinNumber(Parser *parser)
 {
-    while ('0' == parser->curChar || '1' == parser->curChar)
+    while (parser->curChar == '0' || parser->curChar == '1')
     {
         getNextChar(parser);
     }
@@ -337,7 +337,7 @@ static void parseBinNumber(Parser *parser)
 // 解析二进制、八进制、十进制、十六进制数字
 static void parseNumber(Parser *parser)
 {
-    if ('0' == parser->curChar && matchNextChar(parser, 'x'))
+    if (parser->curChar == '0' && matchNextChar(parser, 'x'))
     {
         // 解析十六进制 前缀0x
         if (isxdigit(lookAheadChar(parser)))
@@ -351,10 +351,10 @@ static void parseNumber(Parser *parser)
             LEX_ERROR(parser, "expect hexadecimal char after \"0x\", but got '%c'", lookAheadChar(parser));
         }
     }
-    else if ('0' == parser->curChar && matchNextChar(parser, 'b'))
+    else if (parser->curChar == '0' && matchNextChar(parser, 'b'))
     {
         // 解析二进制 前缀0b
-        if ('0' == lookAheadChar(parser) || '1' == lookAheadChar(parser))
+        if (lookAheadChar(parser) == '0' || lookAheadChar(parser) == '1')
         {
             getNextChar(parser);
             parseBinNumber(parser);
@@ -365,7 +365,7 @@ static void parseNumber(Parser *parser)
             LEX_ERROR(parser, "expect binary char after \"0b\", but got '%c'", lookAheadChar(parser));
         }
     }
-    else if ('0' == parser->curChar && isdigit(lookAheadChar(parser)))
+    else if (parser->curChar == '0' && isdigit(lookAheadChar(parser)))
     {
         // 解析八进制 前缀0
         if ('0' <= lookAheadChar(parser) && lookAheadChar(parser) < '8')
@@ -396,7 +396,7 @@ void getNextToken(Parser *parser)
     parser->curToken.type = TOKEN_EOF;
     parser->curToken.size = 0;
     parser->curToken.start = parser->nextChar - 1;
-    while ('\0' != parser->curChar)
+    while (parser->curChar != '\0')
     {
         switch (parser->curChar)
         {
@@ -564,7 +564,7 @@ void getNextToken(Parser *parser)
             }
             else
             {
-                if ('#' == parser->curChar && matchNextChar(parser, '!'))
+                if (parser->curChar == '#' && matchNextChar(parser, '!'))
                 {
                     skipLine(parser);
                     parser->curToken.start = parser->nextChar - 1;

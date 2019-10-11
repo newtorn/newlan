@@ -92,28 +92,28 @@ uint8_t encodeUtf8(uint8_t *buf, int value)
 // 读取到低字节则返回0
 uint32_t getByteNumOfDecodeUtf8(uint8_t high_byte)
 {
-    if (0x80 == (high_byte & 0xc0))
+    if ((high_byte & 0xc0) == 0x80)
     {
         // 0x02 (10)
         // Or ( (high_byte >> 6) == 0x02 )
         return 0;
     }
 
-    if (0xf0 == (high_byte & 0xf8))
+    if ((high_byte & 0xf8) == 0xf0)
     {
         // 0x1e (11110)
         // Or ( (high_byte >> 3) == 0x1e )
         return 4;
     }
 
-    if (0xe0 == (high_byte & 0xf0))
+    if ((high_byte & 0xf0) == 0xe0)
     {
         // 0x0e (1110)
         // Or ( (high_byte >> 4) == 0x0e )
         return 3;
     }
 
-    if (0xc0 == (high_byte & 0xe0))
+    if ((high_byte & 0xe0) == 0xc0)
     {
         // 0x06 (110)
         // or ( (high_byte >> 5) == 0x06)
@@ -140,17 +140,17 @@ int decodeUtf8(const uint8_t *buf, uint32_t maxsize)
     uint32_t restBytes; // 剩余字节数
 
     // 填充高字节
-    if (0xc0 == (*buf & 0xe0))
+    if ((*buf & 0xe0) == 0xc0)
     {
         value = *buf & 0x1f;
         restBytes = 1;
     }
-    else if (0xe0 == (*buf & 0xf0))
+    else if ((*buf & 0xf0) == 0xe0)
     {
         value = *buf & 0x0f;
         restBytes = 2;
     }
-    else if (0xf0 == (*buf & 0xf8))
+    else if ((*buf & 0xf8) == 0xf0)
     {
         value = *buf & 0x07;
         restBytes = 3;
@@ -171,7 +171,7 @@ int decodeUtf8(const uint8_t *buf, uint32_t maxsize)
         buf++;
         restBytes--;
         // 低字节高2位为10
-        if (0x80 != (*buf & 0xc0))
+        if ((*buf & 0xc0) != 0x80)
         {
             return -1;
         }

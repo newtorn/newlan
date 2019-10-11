@@ -16,7 +16,7 @@ bool valueIsEqual(Value a, Value b)
         return false;
     }
 
-    if (VT_NUMBER == a.type)
+    if (a.type == VT_NUMBER)
     {
         return a.number == b.number;
     }
@@ -53,7 +53,7 @@ bool valueIsEqual(Value a, Value b)
 Model* makeRawModel(VM *vm, const char *name, uint32_t attrCnt)
 {
     Model *model = ALLOCATE(vm, Model);
-    if (NULL != model)
+    if (model != NULL)
     {
         initObjectHeader(vm, &(model->objectHeader), OT_MODEL, NULL);
         model->name = makeObjectString(vm, name, strlen(name));

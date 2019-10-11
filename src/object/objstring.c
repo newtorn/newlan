@@ -26,10 +26,10 @@ void hashObjectString(ObjectString *os)
 ObjectString *makeObjectString(VM *vm, const char *str, uint32_t size)
 {
     // size为0且str为NULL 或 size不为0且str不为NULL
-    ASSERT(0 == size || NULL != str, "string size does not match string");
+    ASSERT(size == 0 || str != NULL, "string size does not match string");
 
     ObjectString *os = ALLOCATE_FLEX(vm, ObjectString, size + 1);
-    if (NULL != os)
+    if (os != NULL)
     {
         initObjectHeader(vm, &(os->objectHeader), OT_STRING, vm->stringModel);
         os->value.size = size;

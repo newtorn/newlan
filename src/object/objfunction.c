@@ -7,7 +7,7 @@
 ObjectFunction *makeObjectFunction(VM *vm, ObjectModule *om, uint32_t maxStackSlot)
 {
     ObjectFunction *of = ALLOCATE(vm, ObjectFunction);
-    if (NULL != of)
+    if (of != NULL)
     {
         initObjectHeader(vm, &(of->objectHeader), OT_FUNCTION, vm->functionModel);
         ByteBufferInit(&(of->instrStream));
@@ -32,7 +32,7 @@ ObjectFunction *makeObjectFunction(VM *vm, ObjectModule *om, uint32_t maxStackSl
 ObjectClosure *makeObjectClosure(VM *vm, ObjectFunction *of)
 {
     ObjectClosure *oc = ALLOCATE_FLEX(vm, ObjectClosure, sizeof(ObjectUpvalue) * (of->argc));
-    if (NULL != oc)
+    if (oc != NULL)
     {
         initObjectHeader(vm, &(oc->objectHeader), OT_CLOSURE, vm->functionModel);
         oc->func = of;
@@ -53,7 +53,7 @@ ObjectClosure *makeObjectClosure(VM *vm, ObjectFunction *of)
 ObjectUpvalue *makeObjectUpvalue(VM *vm, Value *localVar)
 {
     ObjectUpvalue *ou = ALLOCATE(vm, ObjectUpvalue);
-    if (NULL != ou)
+    if (ou != NULL)
     {
         initObjectHeader(vm, &(ou->objectHeader), OT_UPVALUE, NULL);
         ou->localVar = localVar;

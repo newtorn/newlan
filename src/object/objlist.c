@@ -9,11 +9,11 @@ ObjectList *makeObjectList(VM *vm, uint32_t elemCnt)
         ea = ALLOCATE_ARRAY(vm, Value, elemCnt);
     }
     ObjectList *ol = ALLOCATE(vm, ObjectList);
-    if (elemCnt > 0 && NULL == ea)
+    if (elemCnt > 0 && ea == NULL)
     {
         MEM_ERROR("allocate Value failed");
     }
-    else if (NULL == ol)
+    else if (ol == NULL)
     {
         MEM_ERROR("allocate ObjectList failed");
     }

@@ -8,7 +8,7 @@
 ObjectMap *makeObjectMap(VM *vm)
 {
     ObjectMap *om = ALLOCATE(vm, ObjectMap);
-    if (NULL != om)
+    if (om != NULL)
     {
         initObjectHeader(vm, &(om->objectHeader), OT_MAP, vm->mapModel);
         om->cap = om->cnt = 0;
@@ -100,7 +100,7 @@ static bool addEntry(Entry *entries, uint32_t cap, Value k, Value v)
 static void mapResize(VM *vm, ObjectMap *om, uint32_t newCap)
 {
     Entry *ne = ALLOCATE_ARRAY(vm, Entry, newCap);
-    if (NULL != ne)
+    if (ne != NULL)
     {
         uint32_t idx = 0;
         while (idx < newCap)
@@ -135,7 +135,7 @@ static void mapResize(VM *vm, ObjectMap *om, uint32_t newCap)
 // 根据键在键值对链查找键值对
 static Entry *findEntryByKey(ObjectMap *om, Value k)
 {
-    if (0 == om->cap)
+    if (om->cap == 0)
     {
         return NULL;
     }
@@ -162,7 +162,7 @@ static Entry *findEntryByKey(ObjectMap *om, Value k)
 // 根据值在键值对链查找键值对
 static Entry *findEntryByValue(ObjectMap *om, Value v)
 {
-    if (0 == om->cap)
+    if (om->cap == 0)
     {
         return NULL;
     }
@@ -202,7 +202,7 @@ void mapSet(VM *vm, ObjectMap *om, Value k, Value v)
 Value mapGetByKey(ObjectMap *om, Value k)
 {
     Entry *e = findEntryByKey(om, k);
-    if (NULL == e)
+    if (e == NULL)
     {
         return VT_TO_VALUE(VT_UNDEFINED);
     }
@@ -213,7 +213,7 @@ Value mapGetByKey(ObjectMap *om, Value k)
 Value mapGetByValue(ObjectMap *om, Value v)
 {
     Entry *e = findEntryByValue(om, v);
-    if (NULL == e)
+    if (e == NULL)
     {
         return VT_TO_VALUE(VT_UNDEFINED);
     }
@@ -244,7 +244,7 @@ void mapClear(VM *vm, ObjectMap *om)
 Value mapRemove(VM *vm, ObjectMap *om, Value k)
 {
     Entry *e = findEntryByKey(om, k);
-    if (NULL == e)
+    if (e == NULL)
     {
         return VT_TO_VALUE(VT_NONE);
     }
@@ -254,7 +254,7 @@ Value mapRemove(VM *vm, ObjectMap *om, Value k)
     e->value = VT_TO_VALUE(VT_TRUE);
 
     om->cnt--;
-    if (0 == om->cnt)
+    if (om->cnt == 0)
     {
         mapClear(vm, om);
     }

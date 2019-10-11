@@ -19,12 +19,12 @@ static void runFile(const char *path)
     const char *lastSlash = NULL;
 
     i = 0;
-    while ('\0' != *(sep + i))
+    while (*(sep + i) != '\0')
     {
         lastSlash = strrchr(path, *(sep + i++));
-        if (NULL != lastSlash)
+        if (lastSlash != NULL)
         {
-            i = ('\\' == *(sep + i) && '\\' == *(lastSlash + 1)) ? 1 : 0; // 处理双反斜杠
+            i = (*(sep + i) == '\\' && *(lastSlash + 1) == '\\') ? 1 : 0; // 处理双反斜杠
             char *root = (char *)malloc(lastSlash - path + 2 + i);
             memcpy(root, path, lastSlash - path + 1 + i);
             root[lastSlash - path + 1 + i] = '\0';
@@ -57,7 +57,7 @@ static void runFile(const char *path)
 
 int main(int argc, const char **argv)
 {
-    if (1 == argc)
+    if (argc == 1)
     {
         ;
     }

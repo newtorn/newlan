@@ -30,7 +30,7 @@ void threadReset(ObjectThread *ot, ObjectClosure *oc)
 // 创建线程
 ObjectThread *makeObjectThread(VM *vm, ObjectClosure *oc)
 {
-    ASSERT(NULL != oc, "ObjectClosure is NULL");
+    ASSERT(oc != NULL, "ObjectClosure is NULL");
     Frame *frames = ALLOCATE_ARRAY(vm, Frame, INITIAL_FRAME_NUM);
 
     // 加1供存储消息接收者
@@ -38,7 +38,7 @@ ObjectThread *makeObjectThread(VM *vm, ObjectClosure *oc)
     
     Value *newStack = ALLOCATE_ARRAY(vm, Value, statckCap);
     ObjectThread *ot = ALLOCATE(vm, ObjectThread);
-    if (NULL != frames && NULL != newStack && NULL != ot)
+    if (frames != NULL && newStack != NULL && ot != NULL)
     {
         initObjectHeader(vm, &(ot->objectHeader), OT_THREAD, vm->threadModel);
         ot->frames = frames;

@@ -15,7 +15,7 @@ void initVM(VM *vm)
 VM *makeVM()
 {
     VM *vm = (VM *)malloc(sizeof(VM));
-    if (NULL == vm)
+    if (vm == NULL)
     {
         MEM_ERROR("allocate VM failed");
     }
