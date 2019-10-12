@@ -27,6 +27,45 @@ static const int32_t opCodeSlotsUsed[] = {
 };
 #undef OPCODE_SLOTS
 
+// 绑定权值
+typedef enum
+{
+    BP_NONE,      // 无权值
+    BP_LOWEST,    // 最低权值
+    BP_ASSIGN,    // =
+    BP_QUESTION,  // ?:
+    BP_LOGIC_OR,  // ||
+    BP_LOGIC_AND, // &&
+    BP_EQUAL,     // ==
+    BP_IS,        // is
+    BP_CMP,       // < <= > >=
+    BP_BIT_OR,    // |
+    BP_BIT_AND,   // &
+    BP_BIT_SHIFT, // << >>
+    BP_RANGE,     // ...
+    BP_TERM,      // + -
+    BP_FACTOR,    // * / %
+    BP_UNARY,     // - ! ~
+    BP_CALL,      // . () []
+    BP_HIGHEST    // 最高权值
+} BindPower;
+
+// 表示符函数指针
+typedef void (*Represention)(CompileUnit *cu, bool canAssign);
+
+// 签名函数指针
+typedef void (*ActionSignature)(CompileUnit *cu, Signature *signature);
+
+// 符号绑定规则　
+typedef struct
+{
+    const char *sid;      // 符号
+    BindPower lbp;        // 左权值 不关系关心做操作数则为0
+    Represention nud;     // 不关注左操作数的标记调用
+    Represention led;     // 关注左操作数的标记调用
+    ActionSignature sign; // 符号被视为行为时的签名
+} SymbolBindRule;
+
 // 初始化编译单元
 static void initCompileUnit(Parser *parser, CompileUnit *cu, CompileUnit *enclosedUnit, bool isAction)
 {
@@ -158,6 +197,71 @@ int32_t defineModuleVar(VM *vm, ObjectModule *om, const char *name, uint32_t siz
     }
 }
 
+// 返回添加常量的索引
+static uint32_t addConstant(CompileUnit *cu, Value constant)
+{
+    ValueBufferPut(cu->curParser->vm, &(cu->func->constants), constant);
+    return cu->func->constants.cnt - 1;
+}
+
+// 生成加载常量的指令
+static void genLoadConstant(CompileUnit *cu, Value v)
+{
+    uint32_t idx = addConstant(cu, v);
+    writeOpCodeShortOperand(cu, OC_LOAD_CONSTANT, idx);
+}
+
+// 字面量编译
+static void literal(CompileUnit *cu, bool canAssign UNUSED)
+{
+    genLoadConstant(cu, cu->curParser->preToken.value);
+}
+
+// 前缀符号
+#define PREFIX_SYMBOL(nud)             \
+    {                                  \
+        NULL, BP_NONE, nud, NULL, NULL \
+    }
+
+// 前缀运算符
+#define PREFIX_OPERATOR(sid)                                    \
+    {                                                           \
+        sid, BP_NONE, unaryOperator, NULL, unaryActionSignature \
+    }
+
+// 中缀符号
+#define INFIX_SYMBOL(lbp, led)     \
+    {                              \
+        NULL, lbp, NULL, led, NULL \
+    }
+
+// 中缀运算符
+#define INFIX_OPERATOR(sid, lbp)                            \
+    {                                                       \
+        sid, lbp, NULL, infixOperator, infixActionSignature \
+    }
+
+// 混合算符
+#define MIX_OPERATOR(sid)                                              \
+    {                                                                  \
+        sid, BP_TERM, unaryOperator, infixOperator, mixActionSignature \
+    }
+
+// 占位规则
+#define UNUSED_RULE                     \
+    {                                   \
+        NULL, BP_NONE, NULL, NULL, NULL \
+    }
+
+static void *unaryOperator(CompileUnit *cu, bool canAssign);
+static void *infixOperator(CompileUnit *cu, bool canAssign);
+static void *unaryActionSignature(CompileUnit *cu, Signature *signature);
+static void *infixActionSignature(CompileUnit *cu, Signature *signature);
+static void *mixActionSignature(CompileUnit *cu, Signature *signature);
+
+// 符号规则
+SymbolBindRule Rules[] = {UNUSED_RULE, PREFIX_SYMBOL(literal), PREFIX_SYMBOL(literal),};
+
 // 编译程序
 static void compileProgram(CompileUnit *cu)
 {
@@ -179,7 +283,7 @@ ObjectFunction *compileModule(VM *vm, ObjectModule *om, const char *moduleCode)
     {
         initParser(vm, &parser, (const char *)(om->name->value.start), moduleCode, om);
     }
-    
+
     CompileUnit mcu;
     initCompileUnit(&parser, &mcu, NULL, false);
 
