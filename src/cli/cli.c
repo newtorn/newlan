@@ -5,13 +5,6 @@
 #include <stdio.h>
 #include <string.h>
 
-// #include "test.h"
-// void runTest()
-// {
-//     test_utils();
-//     test_utf8();
-// }
-
 static void runFile(const char *path)
 {
     uint32_t i;
@@ -35,22 +28,6 @@ static void runFile(const char *path)
 
     VM *vm = makeVM();
     const char *source = readFile(path);
-
-    // struct parser parser;
-    // initParser(vm, &parser, path, source, NULL);
-
-    // #include "token.list"
-    // while (TOKEN_EOF != parser.curToken.type)
-    // {
-    //     getNextToken(&parser);
-    //     printf("%dL: %s [", parser.curToken.lineNum, tokenReprs[parser.curToken.type]);
-    //     uint32_t i = 0;
-    //     while (i < parser.curToken.size)
-    //     {
-    //         printf("%c", *(parser.curToken.start + i++));
-    //     }
-    //     printf("]\n");
-    // }
 
     execModule(vm, OBJECT_TO_VALUE(makeObjectString(vm, path, strlen(path))), source);
 }
